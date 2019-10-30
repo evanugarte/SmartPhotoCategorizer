@@ -1,0 +1,117 @@
+defaults: &defaults
+  working_directory: ~/repo
+  docker:
+    - image: circleci/node:8.11
+version: 2
+jobs:
+  checkout_code:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          keys:
+            - source-{{ .Branch }}-{{ .Revision }}
+            - source-{{ .Branch }}-
+            - source-
+
+      - checkout
+
+      - save_cache:
+          key: source-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - "~/repo"
+  install:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          key: source-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: "Yarn install"
+          command: cd client/ && yarn install
+      - save_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+          paths:
+            - node_modules
+  test:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          key: source-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: "Test"
+          command: npm run lint
+  build:
+    <<: *defaults
+    steps:
+      - restore_cache:
+          key: source-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run:
+          name: "get config base64 encoding"
+          command: echo $config_data > .temp
+      - run:
+          name: "decode base64 stuff"
+          command: base64 --decode .temp > src/backend/config.js
+      - run: 
+          name: "Build app"
+          command: npm run build
+      - save_cache:
+          key: source-{{ .Branch }}-{{ .Revision }}
+          paths:
+            - "~/repo"
+      - persist_to_workspace:
+          root: ~/repo
+          paths:
+            - build/*
+            - package.json
+  deploy:
+    <<: *defaults
+    environment:
+      - STAGING_BUCKET: 172project1staging
+      - PRODUCTION_BUCKET: 172project1website
+      - STAGING_DISTRIBUTION_ID: E332K02TVSXERV
+      - PRODUCTION_DISTRIBUTION_ID: EXH43QO1ICYWP
+    steps:
+      - attach_workspace:
+          at: ~/repo
+      - restore_cache:
+          key: source-{{ .Branch }}-{{ .Revision }}
+      - restore_cache:
+          key: dependency-cache-{{ checksum "package.json" }}
+      - run: sudo apt-get update && sudo apt-get install -y python-dev
+      - run: sudo curl -O https://bootstrap.pypa.io/get-pip.py
+      - run: sudo python get-pip.py
+      - run: sudo pip install awscli --upgrade
+      - run: aws --version
+      - run: aws s3 ls
+      - run: 
+          command: |
+            if [ "${CIRCLE_BRANCH}" == "master" ]; then
+              aws s3 sync build/ s3://${PRODUCTION_BUCKET} --delete
+              cd build && aws cloudfront create-invalidation --distribution-id "${PRODUCTION_DISTRIBUTION_ID}" --paths /index.html
+            elif [ "${CIRCLE_BRANCH}" == "staging" ]; then
+              aws s3 sync build/ s3://${STAGING_BUCKET} --delete
+              cd build && aws cloudfront create-invalidation --distribution-id "${STAGING_DISTRIBUTION_ID}" --paths /index.html
+            fi
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - checkout_code
+      - install:
+          requires:
+            - checkout_code
+      - test:
+          requires:
+            - install
+      - build:
+          requires:
+            - install
+      - deploy:
+          requires:
+            - test
+            - build
