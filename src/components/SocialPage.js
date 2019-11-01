@@ -15,12 +15,6 @@ import ShareIcon from "@material-ui/icons/Share";
 
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { withStyles } from "@material-ui/core/styles";
-import AppBar from "@material-ui/core/AppBar";
-import Toolbar from "@material-ui/core/Toolbar";
-
-import Button from "@material-ui/core/Button";
-
-import MenuIcon from "@material-ui/icons/Menu";
 
 const styles = theme => ({
   card: {
@@ -62,21 +56,6 @@ class SocialPage extends Component {
       <Grid container spacing={3} justify="center">
         <Grid item xs={12}>
           <div className={classes.root}>
-            <AppBar position="static" style={{ backgroundColor: "white" }}>
-              <Toolbar>
-                <IconButton
-                  edge="start"
-                  className={classes.menuButton}
-                  color="black"
-                  aria-label="menu"
-                >
-                  <MenuIcon />
-                </IconButton>
-                <Button color="inherit" color="black">
-                  Login
-                </Button>
-              </Toolbar>
-            </AppBar>
           </div>
         </Grid>
         <Grid item xs={6}>

@@ -1,6 +1,34 @@
-import React from "react";
+import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import "./index.css";
-import App from "./App";
+import { BrowserRouter, withRouter} from "react-router-dom";
+import Routing from "./Routing";
+import Navbar from "./components/Navbar";
+import "./App.css";
+import "bootstrap/dist/css/bootstrap.min.css";
+import { Provider } from "react-redux";
+import store from "./store";
+function App(props) {
+
+  const [authenticated, setAuthenticated] = useState(true);
+
+  function handleLogout() {
+    setAuthenticated(false);
+    props.history.push("/login");
+  }
+
+  return (
+    <div className="App">
+      <Provider store={store}>
+        <BrowserRouter>
+          <Navbar authed={authenticated} handleLogout={handleLogout} />
+          <Routing appProps={{ authenticated, setAuthenticated }} />
+        </BrowserRouter>
+      </Provider>
+
+    </div>
+  );
+}
+
+export default withRouter(App);
 
 ReactDOM.render(<App />, document.getElementById("root"));
