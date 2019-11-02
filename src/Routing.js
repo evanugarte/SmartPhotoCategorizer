@@ -1,9 +1,10 @@
 import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
-import LoginPage from "./LoginPage";
-import CategoriesPage from "./CategoriesPage";
-import PhotoList from "./PhotoList";
+import LoginPage from "./components/LoginPage";
+import CategoriesPage from "./components/CategoriesPage";
+import PhotoList from "./components/PhotoList";
 import { PrivateRoute } from "./PrivateRoute";
+import SocialPage from "./components/SocialPage";
 
 function Routing({ appProps }) {
   const signedOutRoutes = [
@@ -16,6 +17,9 @@ function Routing({ appProps }) {
         <PrivateRoute exact path="/"
           appProps={{ allowed: appProps.authenticated, ...appProps }}
           component={CategoriesPage} />
+        <PrivateRoute exact path="/SocialPage"
+          appProps={{ allowed: appProps.authenticated, ...appProps }}
+          component={SocialPage} />
         <PrivateRoute exact path="/category/:name"
           appProps={{ allowed: appProps.authenticated, ...appProps }}
           component={PhotoList} />

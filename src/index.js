@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import ReactDOM from "react-dom";
-import { BrowserRouter, withRouter } from "react-router-dom";
+import { BrowserRouter, withRouter} from "react-router-dom";
 import Routing from "./Routing";
-import Navbar from "./Navbar";
+import Navbar from "./components/Navbar";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
-
+import { Provider } from "react-redux";
+import store from "./store";
 function App(props) {
 
   const [authenticated, setAuthenticated] = useState(true);
@@ -17,11 +18,13 @@ function App(props) {
 
   return (
     <div className="App">
-      <BrowserRouter>
-        <Navbar authed={authenticated}
-          handleLogout={handleLogout} />
-        <Routing appProps={{ authenticated, setAuthenticated }} />
-      </BrowserRouter>
+      <Provider store={store}>
+        <BrowserRouter>
+          <Navbar authed={authenticated} handleLogout={handleLogout} />
+          <Routing appProps={{ authenticated, setAuthenticated }} />
+        </BrowserRouter>
+      </Provider>
+
     </div>
   );
 }

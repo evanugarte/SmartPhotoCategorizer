@@ -5,7 +5,7 @@ import {
   Container, Button
 } from "reactstrap";
 import img from "./black.png";
-import "./App.css";
+import "../App.css";
 
 function Employees(props) {
 
