@@ -12,7 +12,7 @@ AWS.config.update({
 });
 
 // Constants. Put this in a separate config file?
-const BUCKET_NAME = "cmpe172-project2-bucket"
+const BUCKET_NAME = "cmpe172-project2-bucket";
 
 // initialize s3, rekognition, and dynamoDB Document Client
 var s3 = new AWS.S3();
