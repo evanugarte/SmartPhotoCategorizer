@@ -9,5 +9,5 @@ router.get("/", function(req, res, next) {
   res.send("respond with a resource");
 });
 
-router.post("/upload", upload.single("image"), api.uploadFile);
+router.post("/upload", upload.single("file"), api.uploadFile);
 module.exports = router;
