@@ -18,7 +18,7 @@ function Navigation(props) {
   const [isOpen, toggleOpen] = useState(false);
   const [dropdownOpen, toggleDropdownOpen] = useState(false);
   const navLinks = [
-    { name: "Upload File", link: "upload" },
+    { name: "Upload File", link: "/UploadView" },
     { name: "View Files", link: "/" },
   ];
   
