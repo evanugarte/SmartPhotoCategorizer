@@ -23,7 +23,7 @@ function Routing({ appProps }) {
         <PrivateRoute exact path="/SocialPage"
           appProps={{ allowed: appProps.authenticated, ...appProps }}
           component={SocialPage} />
-        <PrivateRoute exact path="/upload"
+        <PrivateRoute exact path="/UploadView"
           appProps={{ allowed: appProps.authenticated, ...appProps }}
           component={UploadPage} />
         <PrivateRoute exact path="/category/:name"
