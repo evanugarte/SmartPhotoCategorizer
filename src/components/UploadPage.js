@@ -41,11 +41,6 @@ class UploadPage extends Component {
 
     this.handleInit = this.handleInit.bind(this);
   }
-  //   componentWillMount() {
-  //     if (!this.props.user.isLoggedIn) {
-  //       this.props.history.push("/signin");
-  //     }
-  //   }
 
   onChange(e) {
     this.setState({ [e.target.name]: e.target.value });

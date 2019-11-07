@@ -43,7 +43,7 @@ const uploadFile = (request, response) => {
         statusCode = 500;
         message = "Could not upload";
         if (uploadData) {
-          console.debug("File successfully uploaded")
+          console.debug("File successfully uploaded");
           // Setting up rekognition parameters
           var rekogParams = {
             Image: {
