@@ -63,8 +63,7 @@ class UploadPage extends Component {
   }
 
   handleInit() {
-    // eslint-disable-next-line
-    console.log("FilePond instance has initialised", this.pond);
+    console.debug("FilePond instance has initialised", this.pond);
   }
 
   render() {

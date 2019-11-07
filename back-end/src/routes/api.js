@@ -43,8 +43,7 @@ const uploadFile = (request, response) => {
         statusCode = 500;
         message = "Could not upload";
         if (uploadData) {
-          // eslint-disable-next-line
-          console.log("File successfully uploaded")
+          console.debug("File successfully uploaded")
           // Setting up rekognition parameters
           var rekogParams = {
             Image: {
@@ -56,10 +55,8 @@ const uploadFile = (request, response) => {
 
           // Detect labels with Rekognition
           const rekogData = await rekognition.detectLabels(rekogParams).promise();
-          // eslint-disable-next-line
-          console.log("Labels detected");
-          // eslint-disable-next-line
-          console.log(rekogData);
+          console.debug("Labels detected");
+          console.debug(rekogData);
           const labels = rekogData.Labels;
           var labelNames = [];
           labels.forEach( async (label) => {
@@ -77,8 +74,7 @@ const uploadFile = (request, response) => {
     
             // Put tag item in table so we can query for files based on tags.
             const tagData = await dynamodb.put(tagParams).promise();
-            // eslint-disable-next-line
-            console.log("Added Item: ", tagData);
+            console.debug("Added Item: ", tagData);
           });
 
           // Set up parameters for putting document in files table.
@@ -93,21 +89,18 @@ const uploadFile = (request, response) => {
           };
 
           const fileData = await dynamodb.put(fileParams).promise();
-          // eslint-disable-next-line
-          console.log("Added Item:", fileData);
+          console.debug("Added Item:", fileData);
           statusCode = 200;
           message = "Upload successful";
         }
       }
       catch (e) {
-        // eslint-disable-next-line
-        console.log("Upload error", e);
+        console.debug("Upload error", e);
       }
     }
     response.status(statusCode).send(message);
   })().catch(e => {
-    // eslint-disable-next-line
-    console.log("Something went wrong");
+    console.debug("Something went wrong");
   });
 };
 

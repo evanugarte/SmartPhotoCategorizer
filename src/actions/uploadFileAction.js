@@ -18,6 +18,5 @@ export const uploadFileAction = (file, history) => dispatch => {
         payload: res.data
       });
     })
-    // eslint-disable-next-line
-    .catch(err => console.log(err));
+    .catch(err => console.debug(err));
 };
