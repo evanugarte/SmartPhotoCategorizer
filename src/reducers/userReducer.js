@@ -1,5 +1,5 @@
 const initialState = {
-  userInfo: null
+  userInfo: {email: "dummyemail@gmail.com"}
 };
 
 export default function (state = initialState, action) {
