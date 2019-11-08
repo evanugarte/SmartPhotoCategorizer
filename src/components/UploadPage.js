@@ -38,8 +38,6 @@ class UploadPage extends Component {
     };
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-
-    this.handleInit = this.handleInit.bind(this);
   }
 
   onChange(e) {
@@ -55,10 +53,6 @@ class UploadPage extends Component {
     };
     this.setState({ isSubmit: true });
     this.props.uploadFileAction(uploadData, this.props.history);
-  }
-
-  handleInit() {
-    console.debug("FilePond instance has initialised", this.pond);
   }
 
   render() {
@@ -108,7 +102,6 @@ class UploadPage extends Component {
             files={this.state.file}
             allowMultiple={true}
             maxFiles={1}
-            oninit={() => this.handleInit()}
             onupdatefiles={fileItems => {
               this.setState({
                 file: fileItems.map(fileItem => fileItem.file)
