@@ -32,14 +32,14 @@ class UploadPage extends Component {
   constructor() {
     super();
     this.state = {
+      title: "",
       description: "",
       file: null,
-      isSubmit: false
+      isSubmit: false,
+      inputFields: ["title", "description"]
     };
     this.onChange = this.onChange.bind(this);
     this.onSubmit = this.onSubmit.bind(this);
-
-    this.handleInit = this.handleInit.bind(this);
   }
 
   onChange(e) {
@@ -48,17 +48,17 @@ class UploadPage extends Component {
 
   onSubmit(e) {
     e.preventDefault();
+    const { title, description, file } = this.state;
     const uploadData = {
-      desc: this.state.description,
-      file: this.state.file[0],
+      title: title.length ? title : file[0].filename,
+      desc: description,
+      file: file[0],
       email: this.props.user.userInfo.email
     };
+
+
     this.setState({ isSubmit: true });
     this.props.uploadFileAction(uploadData, this.props.history);
-  }
-
-  handleInit() {
-    console.debug("FilePond instance has initialised", this.pond);
   }
 
   render() {
@@ -92,23 +92,26 @@ class UploadPage extends Component {
           }}
           onSubmit={this.onSubmit}
         >
-          <TextField
-            id="outlined-description"
-            value={this.state.description}
-            onChange={this.onChange}
-            name="description"
-            label="description"
-            margin="normal"
-            variant="outlined"
-            multiline
-          />
+          {this.state.inputFields.map((input, index) => {
+            return (
+              <TextField
+                key={index}
+                id="outlined-description"
+                onChange={this.onChange}
+                name={input}
+                label={input}
+                margin="normal"
+                variant="outlined"
+                multiline
+              />
+            );
+          })}
 
           <FilePond
             ref={ref => (this.pond = ref)}
             files={this.state.file}
             allowMultiple={true}
             maxFiles={1}
-            oninit={() => this.handleInit()}
             onupdatefiles={fileItems => {
               this.setState({
                 file: fileItems.map(fileItem => fileItem.file)
