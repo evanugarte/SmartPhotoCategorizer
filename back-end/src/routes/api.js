@@ -78,12 +78,17 @@ const uploadFile = (request, response) => {
           });
 
           // Set up parameters for putting document in files table.
+          const d = new Date();
+          var uploadDate = (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
           var fileParams = {
             TableName:"Files",
             Item: {
               "file": newFileName,
               "tags": labelNames,
+              "title": request.body.title,
               "desc": request.body.desc,
+              "likes": request.body.likes,
+              "uploadDate": uploadDate,
               "email": request.body.email //Change to request.user.email when authentication is set up
             }
           };
@@ -104,8 +109,73 @@ const uploadFile = (request, response) => {
   });
 };
 
-//uploadFileAsync(process.argv[2])
+/**
+ * Retrieve all photos uploaded by user.
+ * @param {email: String} request 
+ * @param {[{photo: Object, desc: String, uploadDate: String, title: String, likes: String}]} response 
+ */
+const getPhotoSocial = (request, response) => {
+  (async () => {
+    var statusCode = 400;
+    var message = "User does not exist";
+    
+    // Modify email accordingly. For now this is in body.
+    if (request.body.email) {
+      try {
+        console.debug("Querying photos");
+        var queryParams = {
+          TableName: "Files",
+          KeyConditionExpression: "#email = :email",
+          ExpressionAttributeNames: {
+            "#email": "email"
+          },
+          ExpressionAttributeValues: {
+            ":email": request.body.email
+          }
+        };
+        var photos = await dynamodb.query(queryParams).promise();
 
+        // Loop through photos to send all object data
+        photos.forEach( async (photo) => {
+          
+        });
+        statusCode = 200;
+        message = "Get Successful";
+      }
+      catch(e) {
+        console.debug("Could not retrieve photos", e);
+      }
+      response.status(statusCode).send(photos);
+    }
+    else {
+      response.status(statusCode).send(message);
+    }
+  })().catch(e => {
+    console.debug("Something went wrong");
+  });
+};
+
+/**
+ * Retrieve all photos from a specific tag.
+ * @param {tag: String} request 
+ * @param {[{photo: Object, uploadDate: String, title: String}]} response 
+ */
+const getPhotoByTag = (request, response) => {
+  (async () => {
+
+  });
+};
+
+/**
+ * Retrieve all tags and one of their associated photos. 
+ * @param {userID: Integer} request 
+ * @param {[{tag: String, photo: Object}]} response 
+ */
+const getTags = (request, response) => {
+  (async () => {
+
+  });
+};
 module.exports = {
   uploadFile
 };
