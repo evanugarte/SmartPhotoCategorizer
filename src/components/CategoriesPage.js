@@ -4,6 +4,7 @@ import {
   CardTitle, CardSubtitle,
   Container, Button
 } from "reactstrap";
+import SearchBar from "./SearchBar";
 import img from "./black.png";
 import "../App.css";
 
@@ -37,6 +38,7 @@ function Employees(props) {
 
   return (
     <Container style={{ textAlign: "left" }} className="Employees">
+      <SearchBar {...props} />
       {renderPersonEntries()}
     </Container>
   );

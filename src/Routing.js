@@ -19,10 +19,10 @@ function Routing({ appProps }) {
       <Switch>
         <PrivateRoute exact path="/"
           appProps={{ allowed: appProps.authenticated, ...appProps }}
-          component={CategoriesPage} />
-        <PrivateRoute exact path="/SocialPage"
-          appProps={{ allowed: appProps.authenticated, ...appProps }}
           component={SocialPage} />
+        <PrivateRoute exact path="/Categories"
+          appProps={{ allowed: appProps.authenticated, ...appProps }}
+          component={CategoriesPage} />
         <PrivateRoute exact path="/UploadView"
           appProps={{ allowed: appProps.authenticated, ...appProps }}
           component={UploadPage} />
