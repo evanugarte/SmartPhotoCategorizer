@@ -113,6 +113,7 @@ const getPhotoSocial = (request, response) => {
       try {
         console.debug("Querying photos");
         
+        // Query for information based on input email. Use email index to search.
         var queryParams = {
           TableName: "Files",
           IndexName: "email-file-index",
@@ -134,6 +135,8 @@ const getPhotoSocial = (request, response) => {
           if (items[i].title === prevTitle) {
             continue;
           }
+
+          // Get picture data from S3 to send in response.
           var getParams = {
             Bucket: BUCKET_NAME,
             Key: items[i].file
