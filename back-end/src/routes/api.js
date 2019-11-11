@@ -64,37 +64,25 @@ const uploadFile = (request, response) => {
             labelNames.push(label.Name);
     
             // Set up dynamoDB params
-            var tagParams = {
-              TableName:"Tags",
+            const d = new Date();
+            var uploadDate = (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
+            var fileParams = {
+              TableName:"Files",
               Item:{
+                "file": newFileName,
                 "tag": label.Name,
-                "file": newFileName
+                "email": request.body.email,
+                "title": request.body.title,
+                "desc": request.body.desc,
+                "likes": 0,
+                "uploadDate": uploadDate
               }
             };
     
             // Put tag item in table so we can query for files based on tags.
-            const tagData = await dynamodb.put(tagParams).promise();
-            console.debug("Added Item: ", tagData);
+            const fileData = await dynamodb.put(fileParams).promise();
+            console.debug("Added Item: ", fileData);
           });
-
-          // Set up parameters for putting document in files table.
-          const d = new Date();
-          var uploadDate = (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
-          var fileParams = {
-            TableName:"Files",
-            Item: {
-              "file": newFileName,
-              "tags": labelNames,
-              "title": request.body.title,
-              "desc": request.body.desc,
-              "likes": request.body.likes,
-              "uploadDate": uploadDate,
-              "email": request.body.email //Change to request.user.email when authentication is set up
-            }
-          };
-
-          const fileData = await dynamodb.put(fileParams).promise();
-          console.debug("Added Item:", fileData);
           statusCode = 200;
           message = "Upload successful";
         }
@@ -118,34 +106,59 @@ const getPhotoSocial = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "User does not exist";
-    
-    // Modify email accordingly. For now this is in body.
-    if (request.body.email) {
+    console.debug(request.headers.email);
+    const reqEmail = request.headers.email;
+    // For now this will be in the headers. Modify later maybe.
+    if (reqEmail) {
       try {
         console.debug("Querying photos");
+        
         var queryParams = {
           TableName: "Files",
+          IndexName: "email-file-index",
           KeyConditionExpression: "#email = :email",
           ExpressionAttributeNames: {
             "#email": "email"
           },
           ExpressionAttributeValues: {
-            ":email": request.body.email
+            ":email": reqEmail
           }
         };
-        var photos = await dynamodb.query(queryParams).promise();
+        const queryData = await dynamodb.query(queryParams).promise();
+        const items = queryData.Items;
 
+        var responseData = [];
         // Loop through photos to send all object data
-        photos.forEach( async (photo) => {
+        prevTitle = "";
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].title === prevTitle) {
+            continue;
+          }
+          var getParams = {
+            Bucket: BUCKET_NAME,
+            Key: items[i].file
+          };
+          var photoData = await s3.getObject(getParams).promise();
           
-        });
+          responseObject = {
+            photo: photoData.Body.buffer,
+            title: items[i].title,
+            desc: items[i].desc,
+            likes: items[i].likes,
+            uploadDate: items[i].uploadDate
+          };
+
+          responseData.push(responseObject);
+          prevTitle = items[i].title;
+        }
         statusCode = 200;
-        message = "Get Successful";
+        console.debug(responseData);
+        response.status(statusCode).send(responseData);
       }
       catch(e) {
         console.debug("Could not retrieve photos", e);
       }
-      response.status(statusCode).send(photos);
+      console.debug("Retrieval successful");
     }
     else {
       response.status(statusCode).send(message);
@@ -162,7 +175,60 @@ const getPhotoSocial = (request, response) => {
  */
 const getPhotoByTag = (request, response) => {
   (async () => {
+    var statusCode = 400;
+    var message = "Empty";
+    const reqTag = request.headers.tag;
+    if (reqTag) {
+      try {
+        var queryParams = {
+          TableName: "Files",
+          IndexName: "tag-file-index",
+          KeyConditionExpression: "#tag = :tag",
+          ExpressionAttributeNames: {
+            "#tag": "tag"
+          },
+          ExpressionAttributeValues: {
+            ":tag": reqTag
+          }
+        };
 
+        const queryData = await dynamodb.query(queryParams).promise();
+        const items = queryData.Items;
+        console.debug("Data Queried");
+        console.debug(items);
+
+        var fileKeys = [];
+
+        var responseData = [];
+        // Loop through photos to send all object data
+        for (let i = 0; i < items.length; i++) {
+          var getParams = {
+            Bucket: BUCKET_NAME,
+            Key: items[i].file
+          };
+          var photoData = await s3.getObject(getParams).promise();
+            
+          responseObject = {
+            photo: photoData.Body.buffer,
+            title: items[i].title,
+            uploadDate: items[i].uploadDate
+          };
+
+          responseData.push(responseObject);
+        }
+        statusCode = 200;
+        console.debug(responseData);
+        response.status(statusCode).send(responseData);
+      }
+      catch(e) {
+        console.debug("Could not retrieve information", e);
+      }
+    }
+    else {
+      response.status(statusCode).send(message);
+    }
+  })().catch(e => {
+    console.debug("Something went wrong");
   });
 };
 
@@ -173,9 +239,58 @@ const getPhotoByTag = (request, response) => {
  */
 const getTags = (request, response) => {
   (async () => {
+    var statusCode = 400;
+    var message = "Nothing to see here folks";
+    // I assume this line is supposed to check if the user is authenticated. Replace once authentication is done.
+    if (true) {
+      try {
+        var scanParams = {
+          TableName: "Files",
+          ProjectionExpression: "#tag, #file",
+          ExpressionAttributeNames: {
+            "#tag": "tag",
+            "#file": "file"
+          }
+        };
 
+        console.debug("Scanning");
+        const scanData = await dynamodb.scan(scanParams).promise();
+        const items = scanData.Items;
+
+        prevTag = "";
+        var responseData = [];
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].tag === prevTag) {
+            continue;
+          }
+          var getParams = {
+            Bucket: BUCKET_NAME,
+            Key: items[i].file
+          };
+          var photoData = await s3.getObject(getParams).promise();
+
+          var responseObject = {
+            tag: items[i].tag,
+            photo: photoData.Body.buffer
+          };
+
+          console.debug(responseObject);
+          responseData.push(responseObject);
+        }
+        statusCode = 200;
+        response.status(statusCode).send(responseData);
+      }
+      catch(e) {
+        response.status(statusCode).send(message);
+      }
+    }
+  })().catch(e => {
+    console.debug("User is not authenticated");
   });
 };
 module.exports = {
-  uploadFile
+  uploadFile,
+  getPhotoSocial,
+  getPhotoByTag,
+  getTags
 };
