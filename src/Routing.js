@@ -9,6 +9,8 @@ import PhotoList from "./components/PhotoList";
 import SocialPage from "./components/SocialPage";
 import UploadPage from "./components/UploadPage";
 
+import Login from "./components/Authentication/Login";
+
 function Routing({ appProps }) {
   const signedOutRoutes = [
     { path: "/login", C: LoginPage },
@@ -17,6 +19,8 @@ function Routing({ appProps }) {
   return (
     <div>
       <Switch>
+        <Route exact path="/Login" component={Login} /> 
+  
         <PrivateRoute exact path="/"
           appProps={{ allowed: appProps.authenticated, ...appProps }}
           component={SocialPage} />

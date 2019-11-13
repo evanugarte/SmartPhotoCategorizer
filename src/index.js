@@ -7,6 +7,12 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 import store from "./store";
+
+
+import Amplify from "aws-amplify";
+import config from "./aws-exports";
+Amplify.configure(config);
+
 function App(props) {
 
   const [authenticated, setAuthenticated] = useState(true);
@@ -30,5 +36,6 @@ function App(props) {
 }
 
 export default withRouter(App);
+
 
 ReactDOM.render(<App />, document.getElementById("root"));

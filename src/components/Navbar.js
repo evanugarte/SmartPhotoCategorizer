@@ -14,6 +14,14 @@ import {
   DropdownMenu
 } from "reactstrap";
 
+import {Auth} from "aws-amplify";
+
+
+
+
+
+
+
 function Navigation(props) {
   const [isOpen, toggleOpen] = useState(false);
   const [dropdownOpen, toggleDropdownOpen] = useState(false);
@@ -36,10 +44,11 @@ function Navigation(props) {
           </DropdownToggle>
           <DropdownMenu dark="true">
             <DropdownItem>
-              <NavLink
-                onClick={() => props.handleLogout()}
-                href="/login">
-                Log out
+              <NavLink onClick={()=>Auth.signOut({global:true})} href="/Login" >
+                Sign Out
+              </NavLink>
+              <NavLink onClick={()=>Auth.currentAuthenticatedUser().then(user =>alert("You are signed in as "+user.signInUserSession.idToken.payload.email ))}>
+                Current User
               </NavLink>
             </DropdownItem>
           </DropdownMenu>
