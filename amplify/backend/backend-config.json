@@ -1,0 +1,9 @@
+{
+	"auth": {
+		"photoshareuk02cb14d5": {
+			"service": "Cognito",
+			"providerPlugin": "awscloudformation",
+			"dependsOn": []
+		}
+	}
+}

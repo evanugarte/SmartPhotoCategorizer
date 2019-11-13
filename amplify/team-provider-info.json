@@ -1,0 +1,21 @@
+{
+    "local": {
+        "awscloudformation": {
+            "AuthRoleName": "amplify-photoshareuk-local-124211-authRole",
+            "UnauthRoleArn": "arn:aws:iam::311175505660:role/amplify-photoshareuk-local-124211-unauthRole",
+            "AuthRoleArn": "arn:aws:iam::311175505660:role/amplify-photoshareuk-local-124211-authRole",
+            "Region": "us-west-2",
+            "DeploymentBucketName": "amplify-photoshareuk-local-124211-deployment",
+            "UnauthRoleName": "amplify-photoshareuk-local-124211-unauthRole",
+            "StackName": "amplify-photoshareuk-local-124211",
+            "StackId": "arn:aws:cloudformation:us-west-2:311175505660:stack/amplify-photoshareuk-local-124211/66b46280-0331-11ea-a319-06d9085df35e"
+        },
+        "categories": {
+            "auth": {
+                "photoshareuk02cb14d5": {
+                    "hostedUIProviderCreds": "[{\"ProviderName\":\"Facebook\",\"client_id\":\"1330563343769066\",\"client_secret\":\"95ebf602e03a56633f6a5edcf149e9b2\"},{\"ProviderName\":\"Google\",\"client_id\":\"277333010995-1btnv8h7qh882fs94d0kdj15ecqed0n9.apps.googleusercontent.com\",\"client_secret\":\"RJlhIvFG67NBHitjsDj2s9it\"}]"
+                }
+            }
+        }
+    }
+}
