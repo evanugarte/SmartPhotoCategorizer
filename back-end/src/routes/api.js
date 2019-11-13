@@ -44,7 +44,6 @@ const uploadFile = (request, response) => {
         statusCode = 500;
         message = "Could not upload";
         if (uploadData) {
-          console.debug("File successfully uploaded");
           // Setting up rekognition parameters
           var rekogParams = {
             Image: {
@@ -56,8 +55,6 @@ const uploadFile = (request, response) => {
 
           // Detect labels with Rekognition
           const rekogData = await rekognition.detectLabels(rekogParams).promise();
-          console.debug("Labels detected");
-          console.debug(rekogData);
           const labels = rekogData.Labels;
           var labelNames = [];
           labels.forEach( async (label) => {
@@ -82,19 +79,18 @@ const uploadFile = (request, response) => {
     
             // Put tag item in table so we can query for files based on tags.
             const fileData = await dynamodb.put(fileParams).promise();
-            console.debug("Added Item: ", fileData);
           });
           statusCode = 200;
           message = "Upload successful";
         }
       }
       catch (e) {
-        console.debug("Upload error", e);
+        console.error("Upload error", e);
       }
     }
     response.status(statusCode).send(message);
   })().catch(e => {
-    console.debug("Something went wrong");
+    console.error("Something went wrong", e);
   });
 };
 
@@ -108,13 +104,10 @@ const getPhotoSocial = (request, response) => {
     var statusCode = 400;
     var message = "User does not exist";
     const reqEmail = request.body.email;
-    console.debug(reqEmail);
     
     // For now this will be in the headers. Modify later maybe.
     if (reqEmail) {
-      try {
-        console.debug("Querying photos");
-        
+      try {    
         // Query for information based on input email. Use email index to search.
         var queryParams = {
           TableName: "Files",
@@ -132,9 +125,9 @@ const getPhotoSocial = (request, response) => {
 
         var responseData = [];
         // Loop through photos to send all object data
-        prevTitle = "";
+        prevFile = "";
         for (let i = 0; i < items.length; i++) {
-          if (items[i].title === prevTitle) {
+          if (items[i].file === prevFile) {
             continue;
           }
 
@@ -157,19 +150,17 @@ const getPhotoSocial = (request, response) => {
           prevTitle = items[i].title;
         }
         statusCode = 200;
-        console.debug(responseData);
         response.status(statusCode).send(responseData);
       }
       catch(e) {
-        console.debug("Could not retrieve photos", e);
+        console.error("Could not retrieve photos", e);
       }
-      console.debug("Retrieval successful");
     }
     else {
       response.status(statusCode).send(message);
     }
   })().catch(e => {
-    console.debug("Something went wrong");
+    console.error("Something went wrong", e);
   });
 };
 
@@ -183,7 +174,6 @@ const getPhotoByTag = (request, response) => {
     var statusCode = 400;
     var message = "Empty";
     const reqTag = request.body.tag;
-    console.debug(reqTag);
     if (reqTag) {
       try {
         var queryParams = {
@@ -200,8 +190,6 @@ const getPhotoByTag = (request, response) => {
 
         const queryData = await dynamodb.query(queryParams).promise();
         const items = queryData.Items;
-        console.debug("Data Queried");
-        console.debug(items);
 
         var responseData = [];
         // Loop through photos to send all object data
@@ -221,18 +209,17 @@ const getPhotoByTag = (request, response) => {
           responseData.push(responseObject);
         }
         statusCode = 200;
-        console.debug(responseData);
         response.status(statusCode).send(responseData);
       }
       catch(e) {
-        console.debug("Could not retrieve information", e);
+        console.error("Could not retrieve information", e);
       }
     }
     else {
       response.status(statusCode).send(message);
     }
   })().catch(e => {
-    console.debug("Something went wrong");
+    console.error("Something went wrong", e);
   });
 };
 
@@ -246,50 +233,46 @@ const getTags = (request, response) => {
     var statusCode = 400;
     var message = "Nothing to see here folks";
     // I assume this line is supposed to check if the user is authenticated. Replace once authentication is done.
-    if (true) {
-      try {
-        var scanParams = {
-          TableName: "Files",
-          ProjectionExpression: "#tag, #file",
-          ExpressionAttributeNames: {
-            "#tag": "tag",
-            "#file": "file"
-          }
+    try {
+      var scanParams = {
+        TableName: "Files",
+        ProjectionExpression: "#tag, #file",
+        ExpressionAttributeNames: {
+          "#tag": "tag",
+          "#file": "file"
+        }
+      };
+
+      const scanData = await dynamodb.scan(scanParams).promise();
+      const items = scanData.Items;
+
+      prevTag = "";
+      var responseData = [];
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].tag === prevTag) {
+          continue;
+        }
+        var getParams = {
+          Bucket: BUCKET_NAME,
+          Key: items[i].file
+        };
+        var photoData = await s3.getObject(getParams).promise();
+
+        var responseObject = {
+          tag: items[i].tag,
+          photo: photoData.Body.buffer
         };
 
-        console.debug("Scanning");
-        const scanData = await dynamodb.scan(scanParams).promise();
-        const items = scanData.Items;
-
-        prevTag = "";
-        var responseData = [];
-        for (let i = 0; i < items.length; i++) {
-          if (items[i].tag === prevTag) {
-            continue;
-          }
-          var getParams = {
-            Bucket: BUCKET_NAME,
-            Key: items[i].file
-          };
-          var photoData = await s3.getObject(getParams).promise();
-
-          var responseObject = {
-            tag: items[i].tag,
-            photo: photoData.Body.buffer
-          };
-
-          console.debug(responseObject);
-          responseData.push(responseObject);
-        }
-        statusCode = 200;
-        response.status(statusCode).send(responseData);
+        responseData.push(responseObject);
       }
-      catch(e) {
-        response.status(statusCode).send(message);
-      }
+      statusCode = 200;
+      response.status(statusCode).send(responseData);
+    }
+    catch(e) {
+      response.status(statusCode).send(message);
     }
   })().catch(e => {
-    console.debug("User is not authenticated");
+    console.error("User is not authenticated", e);
   });
 };
 module.exports = {
