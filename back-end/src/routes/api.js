@@ -24,6 +24,7 @@ const uploadFile = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "File does not exist";
+    const {email, title, desc} = request.body;
     if (request.file) {
       // Read content from the file
       // const fileContent = fs.readFileSync(fileName);
@@ -71,9 +72,9 @@ const uploadFile = (request, response) => {
               Item:{
                 "file": newFileName,
                 "tag": label.Name,
-                "email": request.body.email,
-                "title": request.body.title,
-                "desc": request.body.desc,
+                "email": email,
+                "title": title,
+                "desc": desc,
                 "likes": 0,
                 "uploadDate": uploadDate
               }
@@ -106,8 +107,9 @@ const getPhotoSocial = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "User does not exist";
-    console.debug(request.headers.email);
-    const reqEmail = request.headers.email;
+    const reqEmail = request.body.email;
+    console.debug(reqEmail);
+    
     // For now this will be in the headers. Modify later maybe.
     if (reqEmail) {
       try {
@@ -180,7 +182,8 @@ const getPhotoByTag = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "Empty";
-    const reqTag = request.headers.tag;
+    const reqTag = request.body.tag;
+    console.debug(reqTag);
     if (reqTag) {
       try {
         var queryParams = {
@@ -199,8 +202,6 @@ const getPhotoByTag = (request, response) => {
         const items = queryData.Items;
         console.debug("Data Queried");
         console.debug(items);
-
-        var fileKeys = [];
 
         var responseData = [];
         // Loop through photos to send all object data
