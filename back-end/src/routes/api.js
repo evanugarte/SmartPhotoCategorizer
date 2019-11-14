@@ -106,6 +106,15 @@ const uploadFile = (request, response) => {
 
 //uploadFileAsync(process.argv[2])
 
+const signup = (request, response) => {
+  (async () => {
+    const {email, userid} = request.body;
+    
+  })().catch(e => 
+    console.error(e));
+};
+
 module.exports = {
-  uploadFile
+  uploadFile,
+  signup
 };
