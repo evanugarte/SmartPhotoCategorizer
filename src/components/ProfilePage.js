@@ -15,7 +15,7 @@ import OutlinedInput from "@material-ui/core/OutlinedInput";
 import FormControl from "@material-ui/core/FormControl";
 import CardMedia from "@material-ui/core/CardMedia";
 
-const styles = theme => ({
+const styles = (theme) => ({
   root: {
     display: "flex",
     flexWrap: "wrap"
@@ -79,7 +79,7 @@ class ProfilePage extends Component {
     this.setState({showPassword: !this.state.showPassword });
   };
 
-  handleMouseDownPassword = event => {
+  handleMouseDownPassword = (event) => {
     event.preventDefault();
   };
 
@@ -190,7 +190,7 @@ class ProfilePage extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   user: state.user
   //TODO: need to get this userid from backend first
 });

@@ -168,9 +168,7 @@ const updateProfile = (request,response) => {
   (async() => {
     var statusCode = 400;
     var message = "sever error";
-    const email = request.body.email;
-    const password = request.body.password;
-    const userid = request.body.userid;
+    const {email, password, userid} = request.body;
     if (request.file) {
       const avatar = request.file.buffer;
       const avatarName = uuid.v4() + request.file.originalname; 
@@ -197,7 +195,7 @@ const updateProfile = (request,response) => {
         const uploadAvatar = await s3.upload(uploadParams).promise();
         dynamodb.update(updateProfileParams, (err, data) => {
           if (err){
-            console.debug("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
             response.status(statusCode).send(message);
 
           } else {
@@ -210,8 +208,8 @@ const updateProfile = (request,response) => {
        
       }
       catch(e) {
-        console.debug(e);
-        response.status(statusCode).send(message);
+        console.error(e);
+        response.status(statusCode).send(e);
 
       }
     } else {
@@ -230,8 +228,8 @@ const updateProfile = (request,response) => {
       try {
         dynamodb.update(updateProfileParams, (err, data) => {
           if (err){
-            console.debug("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
-            response.status(statusCode).send(message);
+            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+            response.status(statusCode).send(err);
 
           } else {
             console.debug("UpdateItem succeeded:", JSON.stringify(data, null, 2));
@@ -242,13 +240,13 @@ const updateProfile = (request,response) => {
         });
       }
       catch(e) {
-        console.debug(e);
-        response.status(statusCode).send(message);
+        console.error(e);
+        response.status(statusCode).send(e);
       }
     }
   })().catch(e => {
-    console.debug(e);
-    response.status(statusCode).send(message);
+    console.error(e);
+    response.status(statusCode).send(e);
 
   });
 };
@@ -284,7 +282,9 @@ const getprofile = (request,response) => {
               userid: profileData.userid
             };  
           } catch(e) {
-            console.debug("can not find the photo", e);
+            console.error("can not find the photo", e);
+            response.status(statusCode).send(e);
+
           }
         } else {
           responseObject = {
@@ -301,6 +301,8 @@ const getprofile = (request,response) => {
       }
       catch(e) {
         console.error("Could not retrieve information", e);
+        response.status(statusCode).send(e);
+
       }
     }
     else {
@@ -308,8 +310,8 @@ const getprofile = (request,response) => {
     }
 
   })().catch(e => {
-    console.debug(e);
-    response.status(statusCode).send(message);
+    console.error(e);
+    response.status(statusCode).send(e);
   });
 };
 
