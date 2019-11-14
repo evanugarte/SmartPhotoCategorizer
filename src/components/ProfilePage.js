@@ -64,7 +64,7 @@ class ProfilePage extends Component {
 
   onSubmit(e) {
     e.preventDefault();
-    const { email, password, file } = this.state;
+    const { password, file } = this.state;
     const profileData = {
       password: password,
       file: file[0],
