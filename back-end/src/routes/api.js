@@ -24,6 +24,7 @@ const uploadFile = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "File does not exist";
+    const {email, title, desc} = request.body;
     if (request.file) {
       // Read content from the file
       // const fileContent = fs.readFileSync(fileName);
@@ -43,7 +44,6 @@ const uploadFile = (request, response) => {
         statusCode = 500;
         message = "Could not upload";
         if (uploadData) {
-          console.debug("File successfully uploaded");
           // Setting up rekognition parameters
           var rekogParams = {
             Image: {
@@ -55,8 +55,6 @@ const uploadFile = (request, response) => {
 
           // Detect labels with Rekognition
           const rekogData = await rekognition.detectLabels(rekogParams).promise();
-          console.debug("Labels detected");
-          console.debug(rekogData);
           const labels = rekogData.Labels;
           var labelNames = [];
           labels.forEach( async (label) => {
@@ -64,47 +62,107 @@ const uploadFile = (request, response) => {
             labelNames.push(label.Name);
     
             // Set up dynamoDB params
-            var tagParams = {
-              TableName:"Tags",
+            const d = new Date();
+            var uploadDate = (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
+            var fileParams = {
+              TableName:"Files",
               Item:{
+                "file": newFileName,
                 "tag": label.Name,
-                "file": newFileName
+                "email": email,
+                "title": title,
+                "desc": desc,
+                "likes": 0,
+                "uploadDate": uploadDate
               }
             };
     
             // Put tag item in table so we can query for files based on tags.
-            const tagData = await dynamodb.put(tagParams).promise();
-            console.debug("Added Item: ", tagData);
+            const fileData = await dynamodb.put(fileParams).promise();
           });
-
-          // Set up parameters for putting document in files table.
-          var fileParams = {
-            TableName:"Files",
-            Item: {
-              "file": newFileName,
-              "tags": labelNames,
-              "desc": request.body.desc,
-              "email": request.body.email //Change to request.user.email when authentication is set up
-            }
-          };
-
-          const fileData = await dynamodb.put(fileParams).promise();
-          console.debug("Added Item:", fileData);
           statusCode = 200;
           message = "Upload successful";
         }
       }
       catch (e) {
-        console.debug("Upload error", e);
+        console.error("Upload error", e);
       }
     }
     response.status(statusCode).send(message);
   })().catch(e => {
-    console.debug("Something went wrong");
+    console.error("Something went wrong", e);
   });
 };
 
-//uploadFileAsync(process.argv[2])
+/**
+ * Retrieve all photos uploaded by user.
+ * @param {email: String} request 
+ * @param {[{photo: Object, desc: String, uploadDate: String, title: String, likes: String}]} response 
+ */
+const getPhotoSocial = (request, response) => {
+  (async () => {
+    var statusCode = 400;
+    var message = "User does not exist";
+    const reqEmail = request.body.email;
+    
+    // For now this will be in the headers. Modify later maybe.
+    if (reqEmail) {
+      try {    
+        // Query for information based on input email. Use email index to search.
+        var queryParams = {
+          TableName: "Files",
+          IndexName: "email-file-index",
+          KeyConditionExpression: "#email = :email",
+          ExpressionAttributeNames: {
+            "#email": "email"
+          },
+          ExpressionAttributeValues: {
+            ":email": reqEmail
+          }
+        };
+        const queryData = await dynamodb.query(queryParams).promise();
+        const items = queryData.Items;
+
+        var responseData = [];
+        // Loop through photos to send all object data
+        prevFile = "";
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].file === prevFile) {
+            continue;
+          }
+
+          // Get picture data from S3 to send in response.
+          var getParams = {
+            Bucket: BUCKET_NAME,
+            Key: items[i].file
+          };
+          var photoData = await s3.getObject(getParams).promise();
+          
+          responseObject = {
+            photo: photoData.Body.buffer,
+            title: items[i].title,
+            desc: items[i].desc,
+            likes: items[i].likes,
+            uploadDate: items[i].uploadDate
+          };
+
+          responseData.push(responseObject);
+          prevTitle = items[i].title;
+        }
+        statusCode = 200;
+        response.status(statusCode).send(responseData);
+      }
+      catch(e) {
+        console.error("Could not retrieve photos", e);
+      }
+    }
+    else {
+      response.status(statusCode).send(message);
+    }
+  })().catch(e => {
+    console.error("Something went wrong", e);
+  });
+};
 
 const signup = (request, response) => {
   (async () => {
@@ -114,7 +172,121 @@ const signup = (request, response) => {
     console.error(e));
 };
 
+/**
+ * Retrieve all photos from a specific tag.
+ * @param {tag: String} request 
+ * @param {[{photo: Object, uploadDate: String, title: String}]} response 
+ */
+const getPhotoByTag = (request, response) => {
+  (async () => {
+    var statusCode = 400;
+    var message = "Empty";
+    const reqTag = request.body.tag;
+    if (reqTag) {
+      try {
+        var queryParams = {
+          TableName: "Files",
+          IndexName: "tag-file-index",
+          KeyConditionExpression: "#tag = :tag",
+          ExpressionAttributeNames: {
+            "#tag": "tag"
+          },
+          ExpressionAttributeValues: {
+            ":tag": reqTag
+          }
+        };
+
+        const queryData = await dynamodb.query(queryParams).promise();
+        const items = queryData.Items;
+
+        var responseData = [];
+        // Loop through photos to send all object data
+        for (let i = 0; i < items.length; i++) {
+          var getParams = {
+            Bucket: BUCKET_NAME,
+            Key: items[i].file
+          };
+          var photoData = await s3.getObject(getParams).promise();
+            
+          responseObject = {
+            photo: photoData.Body.buffer,
+            title: items[i].title,
+            uploadDate: items[i].uploadDate
+          };
+
+          responseData.push(responseObject);
+        }
+        statusCode = 200;
+        response.status(statusCode).send(responseData);
+      }
+      catch(e) {
+        console.error("Could not retrieve information", e);
+      }
+    }
+    else {
+      response.status(statusCode).send(message);
+    }
+  })().catch(e => {
+    console.error("Something went wrong", e);
+  });
+};
+
+/**
+ * Retrieve all tags and one of their associated photos. 
+ * @param {userID: Integer} request 
+ * @param {[{tag: String, photo: Object}]} response 
+ */
+const getTags = (request, response) => {
+  (async () => {
+    var statusCode = 400;
+    var message = "Nothing to see here folks";
+    // I assume this line is supposed to check if the user is authenticated. Replace once authentication is done.
+    try {
+      var scanParams = {
+        TableName: "Files",
+        ProjectionExpression: "#tag, #file",
+        ExpressionAttributeNames: {
+          "#tag": "tag",
+          "#file": "file"
+        }
+      };
+
+      const scanData = await dynamodb.scan(scanParams).promise();
+      const items = scanData.Items;
+
+      prevTag = "";
+      var responseData = [];
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].tag === prevTag) {
+          continue;
+        }
+        var getParams = {
+          Bucket: BUCKET_NAME,
+          Key: items[i].file
+        };
+        var photoData = await s3.getObject(getParams).promise();
+
+        var responseObject = {
+          tag: items[i].tag,
+          photo: photoData.Body.buffer
+        };
+
+        responseData.push(responseObject);
+      }
+      statusCode = 200;
+      response.status(statusCode).send(responseData);
+    }
+    catch(e) {
+      response.status(statusCode).send(message);
+    }
+  })().catch(e => {
+    console.error("User is not authenticated", e);
+  });
+};
 module.exports = {
   uploadFile,
+  getPhotoSocial,
+  getPhotoByTag,
+  getTags,
   signup
 };
