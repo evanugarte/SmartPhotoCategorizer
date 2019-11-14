@@ -20,6 +20,7 @@ function Navigation(props) {
   const navLinks = [
     { name: "Upload File", link: "/UploadView" },
     { name: "View Files", link: "/Categories" },
+    { name: "Profile", link: "/ProfileView" }
   ];
   
 

@@ -105,7 +105,97 @@ const uploadFile = (request, response) => {
 };
 
 //uploadFileAsync(process.argv[2])
+const updateProfile = (request,response) => {
+  (async() => {
+    var statusCode = 400;
+    var message = "sever error";
+    const email = request.body.email;
+    const password = request.body.password;
+    const userid = request.body.userid;
+
+    if (request.file) {
+      const avatar = request.file.buffer;
+      const avatarName = uuid.v4() + request.file.originalname; 
+      // Setting up S3 upload parameters
+      const uploadParams = {
+        Bucket: BUCKET_NAME,
+        Key: avatarName, 
+        Body: avatar
+      };
+      const updateProfileParams = {
+        TableName:"Users",
+        Key: {
+          "userid": userid,
+        },
+        UpdateExpression: "set email = :e, password = :p, avatar = :a",
+        ExpressionAttributeValues:{
+          ":e":email,
+          ":p":password,
+          ":a":avatarName
+        },
+        ReturnValues:"UPDATED_NEW"
+      };
+      try {
+        const uploadAvatar = await s3.upload(uploadParams).promise();
+        dynamodb.update(updateProfileParams, (err, data) => {
+          if (err){
+            console.debug("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+            response.status(statusCode).send(message);
+
+          } else {
+            console.debug("UpdateItem succeeded:", JSON.stringify(data, null, 2));
+            statusCode = 200;
+            message = "update profile successful";
+            response.status(statusCode).send(message);
+          }
+        });
+       
+      }
+      catch(e) {
+        console.debug(e);
+        response.status(statusCode).send(message);
+
+      }
+    } else {
+      const updateProfileParams = {
+        TableName:"Users",
+        Key: {
+          "userid": userid,
+        },
+        UpdateExpression: "set email = :e, password = :p",
+        ExpressionAttributeValues:{
+          ":e":email,
+          ":p":password
+        },
+        ReturnValues:"UPDATED_NEW"
+      };
+      try {
+        dynamodb.update(updateProfileParams, (err, data) => {
+          if (err){
+            console.debug("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+            response.status(statusCode).send(message);
+
+          } else {
+            console.debug("UpdateItem succeeded:", JSON.stringify(data, null, 2));
+            statusCode = 200;
+            message = "update profile successful";
+            response.status(statusCode).send(message);
+          }
+        });
+      }
+      catch(e) {
+        console.debug(e);
+        response.status(statusCode).send(message);
+      }
+    }
+  })().catch(e => {
+    console.debug(e);
+    response.status(statusCode).send(message);
+
+  });
+};
 
 module.exports = {
-  uploadFile
+  uploadFile,
+  updateProfile
 };

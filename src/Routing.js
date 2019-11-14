@@ -8,6 +8,7 @@ import CategoriesPage from "./components/CategoriesPage";
 import PhotoList from "./components/PhotoList";
 import SocialPage from "./components/SocialPage";
 import UploadPage from "./components/UploadPage";
+import ProfilePage from "./components/ProfilePage";
 
 function Routing({ appProps }) {
   const signedOutRoutes = [
@@ -26,6 +27,9 @@ function Routing({ appProps }) {
         <PrivateRoute exact path="/UploadView"
           appProps={{ allowed: appProps.authenticated, ...appProps }}
           component={UploadPage} />
+        <PrivateRoute exact path="/ProfileView"
+          appProps={{ allowed: appProps.authenticated, ...appProps }}
+          component={ProfilePage} />
         <PrivateRoute exact path="/category/:name"
           appProps={{ allowed: appProps.authenticated, ...appProps }}
           component={PhotoList} />

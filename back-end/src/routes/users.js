@@ -10,4 +10,6 @@ router.get("/", function(req, res, next) {
 });
 
 router.post("/upload", upload.single("file"), api.uploadFile);
+router.post("/profile", upload.single("file"), api.updateProfile);
+
 module.exports = router;
