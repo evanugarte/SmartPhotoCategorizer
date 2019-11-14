@@ -10,7 +10,7 @@ export const profileFileAction = (file, history) => dispatch => {
 
 
   axios
-    .post(" http://localhost:4000/users/profile", formData)
+    .post(" http://localhost:4000/users/updateprofile", formData)
     .then(res => {
       history.push("/");
       dispatch({
