@@ -7,18 +7,20 @@ import { FaSignOutAlt } from "react-icons/fa";
 
 const initialUserState = { user: null, loading: true };
 
-function Login() {
+function Login(props) {
   const [userState, dispatch] = useReducer(reducer, initialUserState);
   const [formState, updateFormState] = useState("base");
-
+  console.log('login', props);
   useEffect(() => {
     // set listener for auth events
     Hub.listen("auth", (data) => {
       const { payload } = data;
       if (payload.event === "signIn") {
         setImmediate(() => dispatch({ type: "setUser", user: payload.data }));
+        props.setAuthenticated(true);
         setImmediate(() => window.history.pushState({}, null, "http://localhost:3000"));
         updateFormState("base");
+
       }
       // listener for form sign up
       if (payload.event === "signOut") {
@@ -92,7 +94,7 @@ function reducer (state, action) {
 async function checkUser(dispatch) {
   try {
     const user = await Auth.currentAuthenticatedUser();
-    // console.log('user: ', user)
+    console.log('user: ', user)
     dispatch({ type: "setUser", user });
   } catch (err) {
     //console.log('err: ', err)
@@ -102,7 +104,6 @@ async function checkUser(dispatch) {
 
 function signOut() {
   Auth.signOut({global:true});
-    
 }
 
 
