@@ -199,7 +199,6 @@ const updateProfile = (request,response) => {
             response.status(statusCode).send(message);
 
           } else {
-            console.debug("UpdateItem succeeded:", JSON.stringify(data, null, 2));
             statusCode = 200;
             message = "update profile successful";
             response.status(statusCode).send(message);
@@ -232,7 +231,6 @@ const updateProfile = (request,response) => {
             response.status(statusCode).send(err);
 
           } else {
-            console.debug("UpdateItem succeeded:", JSON.stringify(data, null, 2));
             statusCode = 200;
             message = "update profile successful";
             response.status(statusCode).send(message);
@@ -295,8 +293,6 @@ const getprofile = (request,response) => {
           };  
         }
         statusCode = 200;
-        console.debug("get responseObject data - ",responseObject);
-
         response.status(statusCode).send(responseObject);
       }
       catch(e) {
