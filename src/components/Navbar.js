@@ -13,9 +13,10 @@ import {
   DropdownToggle,
   DropdownMenu
 } from "reactstrap";
-
+import { Link } from "react-router-dom";
 import {Auth} from "aws-amplify";
-
+import {signupAction} from "../actions/signupAction";
+import { connect } from "react-redux";
 
 
 
@@ -30,6 +31,14 @@ function Navigation(props) {
     { name: "View Files", link: "/Categories" },
   ];
   
+  function signup () {
+    Auth.currentAuthenticatedUser().then(user =>{
+      console.log(user);
+      props.signupAction({
+        email: user.signInUserSession.idToken.payload.email, 
+        userid: user.username});
+    });
+  }
 
   function getDropDown() {
     if (props.authed) {
@@ -47,8 +56,9 @@ function Navigation(props) {
               <NavLink onClick={()=>Auth.signOut({global:true})} href="/Login" >
                 Sign Out
               </NavLink>
-              <NavLink onClick={()=>Auth.currentAuthenticatedUser().then(user =>alert("You are signed in as "+user.signInUserSession.idToken.payload.email ))}>
-                Current User
+              <NavLink>
+                {Auth.currentAuthenticatedUser().then(user =>
+                  alert("You are signed in as "+user.signInUserSession.idToken.payload.email))}
               </NavLink>
             </DropdownItem>
           </DropdownMenu>
@@ -60,19 +70,20 @@ function Navigation(props) {
   return (
     <Navbar color="dark" dark={true} expand="sm">
       <Container>
-        <NavbarBrand href="/">172 Project 2</NavbarBrand>
+        <NavbarBrand tag={Link} to="/">172 Project 2</NavbarBrand>
         <Collapse isOpen={isOpen} navbar={true}>
           <Nav className="mr-auto" navbar>
             {props.authed && navLinks.map((option, index) => {
               return (
                 <NavItem key={index}>
-                  <NavLink href={option.link}>{option.name}</NavLink>
+                  <NavLink tag={Link} to={option.link}>{option.name}</NavLink>
                 </NavItem>
               );
             })}
           </Nav>
 
           <Nav className="ml-auto" nav="true">
+            {signup()}
             {getDropDown()}
           </Nav>
         </Collapse>
@@ -82,4 +93,11 @@ function Navigation(props) {
   );
 }
 
-export default Navigation;
+const mapStateToProps = state => ({
+  
+});
+
+export default connect(
+  mapStateToProps,
+  { signupAction }
+)(Navigation);

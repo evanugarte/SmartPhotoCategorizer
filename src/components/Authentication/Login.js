@@ -61,6 +61,9 @@ function Login(props) {
         )
       }
       {
+        console.log('userState.user',userState.user)
+      }
+      {
         userState.user && userState.user.signInUserSession && (
           <div style={styles.body}>
             <h4>

@@ -167,7 +167,25 @@ const getPhotoSocial = (request, response) => {
 const signup = (request, response) => {
   (async () => {
     const {email, userid} = request.body;
-    
+    var statusCode = 400;
+    var message = "Users table error";
+    try{
+      var usersParams = {
+        TableName:"Users",
+        Item:{
+          "userid": userid,
+          "email": email,
+        }
+      };
+      const fileData = await dynamodb.put(usersParams).promise();
+    } catch (e) {
+      console.error("Users table error ",e);
+      response.status(statusCode).send(message);
+    }
+    statusCode = 200;
+    responseData = {email: email, userid: userid};
+    response.status(statusCode).send(responseData);
+
   })().catch(e => 
     console.error(e));
 };
