@@ -13,13 +13,13 @@ import Login from "./components/Authentication/Login";
 
 function Routing({ appProps }) {
   const signedOutRoutes = [
-    { path: "/login", C: LoginPage },
+    { path: "/login", C: Login },
   ];
 
   return (
     <div>
       <Switch>
-        <Route exact path="/Login" component={Login} /> 
+        {/* <Route exact path="/Login" component={Login} />  */}
   
         <PrivateRoute exact path="/"
           appProps={{ allowed: appProps.authenticated, ...appProps }}

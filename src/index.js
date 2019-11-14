@@ -15,7 +15,7 @@ Amplify.configure(config);
 
 function App(props) {
 
-  const [authenticated, setAuthenticated] = useState(true);
+  const [authenticated, setAuthenticated] = useState(false);
 
   function handleLogout() {
     setAuthenticated(false);
