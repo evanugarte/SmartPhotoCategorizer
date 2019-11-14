@@ -13,6 +13,8 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import ShareIcon from "@material-ui/icons/Share";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { withStyles } from "@material-ui/core/styles";
+import { getProfileFileAction } from "../actions/updateProfileAction";
+import { connect } from "react-redux";
 
 const styles = theme => ({
   card: {
@@ -48,7 +50,12 @@ const styles = theme => ({
 });
 
 class SocialPage extends Component {
+  componentWillMount(){
+    const query = {userid: "asd123"}; //TODO: need to get this userid from backend first
+    this.props.getProfileFileAction(query);
+  }
   render() {
+    const {userInfo} = this.props.user;
     const classes = this.props.classes;
     return (
       <Grid container spacing={3} justify="center">
@@ -60,9 +67,7 @@ class SocialPage extends Component {
           <Card className={classes.card}>
             <CardHeader
               avatar={
-                <Avatar aria-label="recipe" className={classes.avatar}>
-                  R
-                </Avatar>
+                <Avatar src={userInfo.avatar ? userInfo.avatar.data : null} aria-label="recipe" className={classes.avatar} />
               }
               action={
                 <IconButton aria-label="settings">
@@ -99,4 +104,12 @@ class SocialPage extends Component {
   }
 }
 
-export default withStyles(styles)(SocialPage);
+const mapStateToProps = state => ({
+  user: state.user
+  //TODO: need to get this userid from backend first
+});
+
+export default connect(
+  mapStateToProps,
+  { getProfileFileAction }
+)(withStyles(styles, { withTheme: true })(SocialPage));

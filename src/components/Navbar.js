@@ -13,6 +13,7 @@ import {
   DropdownToggle,
   DropdownMenu
 } from "reactstrap";
+import { Link } from "react-router-dom";
 
 function Navigation(props) {
   const [isOpen, toggleOpen] = useState(false);
@@ -58,7 +59,7 @@ function Navigation(props) {
             {props.authed && navLinks.map((option, index) => {
               return (
                 <NavItem key={index}>
-                  <NavLink href={option.link}>{option.name}</NavLink>
+                  <NavLink tag={Link} to={option.link}>{option.name}</NavLink>
                 </NavItem>
               );
             })}

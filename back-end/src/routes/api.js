@@ -171,7 +171,6 @@ const updateProfile = (request,response) => {
     const email = request.body.email;
     const password = request.body.password;
     const userid = request.body.userid;
-
     if (request.file) {
       const avatar = request.file.buffer;
       const avatarName = uuid.v4() + request.file.originalname; 
@@ -269,27 +268,36 @@ const getprofile = (request,response) => {
         };
 
         const queryData = await dynamodb.get(queryParams).promise();
-        const items = queryData.Items;
-        console.log('getprofile-queryData-',queryData);
-        // var responseData = [];
-        // // Loop through photos to send all object data
-        // for (let i = 0; i < items.length; i++) {
-        //   var getParams = {
-        //     Bucket: BUCKET_NAME,
-        //     Key: items[i].file
-        //   };
-        //   var photoData = await s3.getObject(getParams).promise();
-            
-        //   responseObject = {
-        //     photo: photoData.Body.buffer,
-        //     title: items[i].title,
-        //     uploadDate: items[i].uploadDate
-        //   };
-
-        //   responseData.push(responseObject);
-        // }
+        const profileData = queryData.Item;
+        var responseObject = null; 
+        if(profileData.avatar !== "N/A"){
+          var getParams = {
+            Bucket: BUCKET_NAME,
+            Key: profileData.avatar
+          };
+          try{
+            var photoData = await s3.getObject(getParams).promise();
+            responseObject = {
+              avatar: photoData.Body,
+              email: profileData.email,
+              password: profileData.password,
+              userid: profileData.userid
+            };  
+          } catch(e) {
+            console.debug("can not find the photo", e);
+          }
+        } else {
+          responseObject = {
+            avatar: null,
+            email: profileData.email,
+            password: profileData.password,
+            userid: profileData.userid
+          };  
+        }
         statusCode = 200;
-        response.status(statusCode).send(responseData);
+        console.debug("get responseObject data - ",responseObject);
+
+        response.status(statusCode).send(responseObject);
       }
       catch(e) {
         console.error("Could not retrieve information", e);
