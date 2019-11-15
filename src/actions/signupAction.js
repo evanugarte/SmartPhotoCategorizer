@@ -2,7 +2,7 @@ import axios from "axios";
 import { SIGN_UP } from "./types";
 
 export const signupAction = (user, history) => dispatch => {
-console.log("signupaction-", user);
+//console.log("signupaction-", user);
   axios
     .post(" http://localhost:4000/users/signup", user)
     .then(res => {

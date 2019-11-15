@@ -33,7 +33,7 @@ function Navigation(props) {
   
   function signup () {
     Auth.currentAuthenticatedUser().then(user =>{
-      console.log(user);
+      //console.log(user);
       props.signupAction({
         email: user.signInUserSession.idToken.payload.email, 
         userid: user.username});
