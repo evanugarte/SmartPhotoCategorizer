@@ -41,15 +41,15 @@ class ProfilePage extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  componentWillMount(){
-    if(this.props.user.userInfo.userid === null){
+  componentWillMount() {
+    if (this.props.user.userInfo.userid === null) {
       this.props.history.push("/");
     }
   }
-  componentDidMount(){
-    if(this.props.user.userInfo.userid === null){
+  componentDidMount() {
+    if (this.props.user.userInfo.userid === null) {
       this.props.history.push("/");
-    }else{
+    } else {
       this.setState({
         email: this.props.user.userInfo.email,
         password: this.props.user.userInfo.password,
@@ -76,7 +76,7 @@ class ProfilePage extends Component {
   }
 
   handleClickShowPassword = () => {
-    this.setState({showPassword: !this.state.showPassword });
+    this.setState({ showPassword: !this.state.showPassword });
   };
 
   handleMouseDownPassword = (event) => {
@@ -84,7 +84,7 @@ class ProfilePage extends Component {
   };
 
   render() {
-    const {userInfo} = this.props.user;
+    const { userInfo } = this.props.user;
     return (
       <div
         style={{
@@ -115,8 +115,8 @@ class ProfilePage extends Component {
             flexDirection: "column"
           }}
           onSubmit={this.onSubmit}
-        > 
-          {this.state.upload ? null :  <CardMedia
+        >
+          {this.state.upload ? null : <CardMedia
             style={{ width: 240, height: 290 }}
             image={this.state.file ? this.state.file.data : require("./user.png")}
           />}
@@ -140,7 +140,7 @@ class ProfilePage extends Component {
               }}
             />
           </div>
-          
+
 
           <TextField
             name="email"
@@ -149,7 +149,7 @@ class ProfilePage extends Component {
             value={this.state.email}
             margin="normal"
             variant="outlined"
-            style={{marginBottom: 10}}
+            style={{ marginBottom: 10 }}
           />
 
           <FormControl variant="outlined">

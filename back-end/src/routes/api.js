@@ -24,18 +24,18 @@ const uploadFile = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "File does not exist";
-    const {email, title, desc} = request.body;
+    const { email, title, desc } = request.body;
     if (request.file) {
       // Read content from the file
       // const fileContent = fs.readFileSync(fileName);
       const fileContent = request.file.buffer;
       // Generate random handle
-      const newFileName = uuid.v4() + request.file.originalname; 
+      const newFileName = uuid.v4() + request.file.originalname;
 
       // Setting up S3 upload parameters
       const uploadParams = {
         Bucket: BUCKET_NAME,
-        Key: newFileName, 
+        Key: newFileName,
         Body: fileContent
       };
       try {
@@ -48,8 +48,8 @@ const uploadFile = (request, response) => {
           var rekogParams = {
             Image: {
               Bytes: fileContent
-            }, 
-            MaxLabels: 10, 
+            },
+            MaxLabels: 10,
             MinConfidence: 70
           };
 
@@ -57,16 +57,16 @@ const uploadFile = (request, response) => {
           const rekogData = await rekognition.detectLabels(rekogParams).promise();
           const labels = rekogData.Labels;
           var labelNames = [];
-          labels.forEach( async (label) => {
+          labels.forEach(async (label) => {
             // Put names of labels inside labelNames
             labelNames.push(label.Name);
-    
+
             // Set up dynamoDB params
             const d = new Date();
             var uploadDate = (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
             var fileParams = {
-              TableName:"Files",
-              Item:{
+              TableName: "Files",
+              Item: {
                 "file": newFileName,
                 "tag": label.Name,
                 "email": email,
@@ -76,7 +76,7 @@ const uploadFile = (request, response) => {
                 "uploadDate": uploadDate
               }
             };
-    
+
             // Put tag item in table so we can query for files based on tags.
             const fileData = await dynamodb.put(fileParams).promise();
           });
@@ -104,10 +104,10 @@ const getPhotoSocial = (request, response) => {
     var statusCode = 400;
     var message = "User does not exist";
     const reqEmail = request.body.email;
-    
+
     // For now this will be in the headers. Modify later maybe.
     if (reqEmail) {
-      try {    
+      try {
         // Query for information based on input email. Use email index to search.
         var queryParams = {
           TableName: "Files",
@@ -137,7 +137,7 @@ const getPhotoSocial = (request, response) => {
             Key: items[i].file
           };
           var photoData = await s3.getObject(getParams).promise();
-          
+
           responseObject = {
             photo: photoData.Body.buffer,
             title: items[i].title,
@@ -152,7 +152,7 @@ const getPhotoSocial = (request, response) => {
         statusCode = 200;
         response.status(statusCode).send(responseData);
       }
-      catch(e) {
+      catch (e) {
         console.error("Could not retrieve photos", e);
       }
     }
@@ -164,37 +164,37 @@ const getPhotoSocial = (request, response) => {
   });
 };
 
-const updateProfile = (request,response) => {
-  (async() => {
+const updateProfile = (request, response) => {
+  (async () => {
     var statusCode = 400;
     var message = "sever error";
-    const {email, password, userid} = request.body;
+    const { email, password, userid } = request.body;
     if (request.file) {
       const avatar = request.file.buffer;
-      const avatarName = uuid.v4() + request.file.originalname; 
+      const avatarName = uuid.v4() + request.file.originalname;
       // Setting up S3 upload parameters
       const uploadParams = {
         Bucket: BUCKET_NAME,
-        Key: avatarName, 
+        Key: avatarName,
         Body: avatar
       };
       const updateProfileParams = {
-        TableName:"Users",
+        TableName: "Users",
         Key: {
           "userid": userid,
         },
         UpdateExpression: "set email = :e, password = :p, avatar = :a",
-        ExpressionAttributeValues:{
-          ":e":email,
-          ":p":password,
-          ":a":avatarName
+        ExpressionAttributeValues: {
+          ":e": email,
+          ":p": password,
+          ":a": avatarName
         },
-        ReturnValues:"UPDATED_NEW"
+        ReturnValues: "UPDATED_NEW"
       };
       try {
         const uploadAvatar = await s3.upload(uploadParams).promise();
         dynamodb.update(updateProfileParams, (err, data) => {
-          if (err){
+          if (err) {
             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
             response.status(statusCode).send(message);
 
@@ -204,29 +204,29 @@ const updateProfile = (request,response) => {
             response.status(statusCode).send(message);
           }
         });
-       
+
       }
-      catch(e) {
+      catch (e) {
         console.error(e);
         response.status(statusCode).send(e);
 
       }
     } else {
       const updateProfileParams = {
-        TableName:"Users",
+        TableName: "Users",
         Key: {
           "userid": userid,
         },
         UpdateExpression: "set email = :e, password = :p",
-        ExpressionAttributeValues:{
-          ":e":email,
-          ":p":password
+        ExpressionAttributeValues: {
+          ":e": email,
+          ":p": password
         },
-        ReturnValues:"UPDATED_NEW"
+        ReturnValues: "UPDATED_NEW"
       };
       try {
         dynamodb.update(updateProfileParams, (err, data) => {
-          if (err){
+          if (err) {
             console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
             response.status(statusCode).send(err);
 
@@ -237,7 +237,7 @@ const updateProfile = (request,response) => {
           }
         });
       }
-      catch(e) {
+      catch (e) {
         console.error(e);
         response.status(statusCode).send(e);
       }
@@ -249,8 +249,8 @@ const updateProfile = (request,response) => {
   });
 };
 
-const getprofile = (request,response) => {
-  (async() => {
+const getprofile = (request, response) => {
+  (async () => {
     var statusCode = 400;
     var message = "sever error";
     const userid = request.body.userid;
@@ -258,28 +258,28 @@ const getprofile = (request,response) => {
       try {
         var queryParams = {
           TableName: "Users",
-          Key:{
+          Key: {
             "userid": userid
           }
         };
 
         const queryData = await dynamodb.get(queryParams).promise();
         const profileData = queryData.Item;
-        var responseObject = null; 
-        if(profileData.avatar !== "N/A"){
+        var responseObject = null;
+        if (profileData.avatar !== "N/A") {
           var getParams = {
             Bucket: BUCKET_NAME,
             Key: profileData.avatar
           };
-          try{
+          try {
             var photoData = await s3.getObject(getParams).promise();
             responseObject = {
               avatar: photoData.Body,
               email: profileData.email,
               password: profileData.password,
               userid: profileData.userid
-            };  
-          } catch(e) {
+            };
+          } catch (e) {
             console.error("can not find the photo", e);
             response.status(statusCode).send(e);
 
@@ -290,12 +290,12 @@ const getprofile = (request,response) => {
             email: profileData.email,
             password: profileData.password,
             userid: profileData.userid
-          };  
+          };
         }
         statusCode = 200;
         response.status(statusCode).send(responseObject);
       }
-      catch(e) {
+      catch (e) {
         console.error("Could not retrieve information", e);
         response.status(statusCode).send(e);
 
@@ -346,7 +346,7 @@ const getPhotoByTag = (request, response) => {
             Key: items[i].file
           };
           var photoData = await s3.getObject(getParams).promise();
-            
+
           responseObject = {
             photo: photoData.Body.buffer,
             title: items[i].title,
@@ -358,7 +358,7 @@ const getPhotoByTag = (request, response) => {
         statusCode = 200;
         response.status(statusCode).send(responseData);
       }
-      catch(e) {
+      catch (e) {
         console.error("Could not retrieve information", e);
       }
     }
@@ -415,7 +415,7 @@ const getTags = (request, response) => {
       statusCode = 200;
       response.status(statusCode).send(responseData);
     }
-    catch(e) {
+    catch (e) {
       response.status(statusCode).send(message);
     }
   })().catch(e => {

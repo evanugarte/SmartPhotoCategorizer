@@ -16,7 +16,7 @@ import { withStyles } from "@material-ui/core/styles";
 import { getProfileFileAction } from "../actions/updateProfileAction";
 import { connect } from "react-redux";
 
-const styles = theme => ({
+const styles = (theme) => ({
   card: {
     maxWidth: 9000
   },
@@ -50,12 +50,12 @@ const styles = theme => ({
 });
 
 class SocialPage extends Component {
-  componentWillMount(){
-    const query = {userid: "asd123"}; //TODO: need to get this userid from backend first
+  componentWillMount() {
+    const query = { userid: "asd123" }; //TODO: need to get this userid from backend first
     this.props.getProfileFileAction(query);
   }
   render() {
-    const {userInfo} = this.props.user;
+    const { userInfo } = this.props.user;
     const classes = this.props.classes;
     return (
       <Grid container spacing={3} justify="center">
@@ -104,7 +104,7 @@ class SocialPage extends Component {
   }
 }
 
-const mapStateToProps = state => ({
+const mapStateToProps = (state) => ({
   user: state.user
   //TODO: need to get this userid from backend first
 });
