@@ -1,9 +1,16 @@
+import { SIGN_UP } from "../actions/types";
+
 const initialState = {
-  userInfo: {email: "dummyemail@gmail.com"}
+  userInfo: null
 };
 
-export default function (state = initialState, action) {
+export default function(state = initialState, action) {
   switch (action.type) {
+  case SIGN_UP:
+    return {
+      ...state,
+      userInfo: action.payload
+    };
   default:
     return state;
   }

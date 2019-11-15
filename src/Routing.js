@@ -19,7 +19,7 @@ function Routing({ appProps }) {
   return (
     <div>
       <Switch>
-        {/* <Route exact path="/Login" component={Login} />  */}
+      
   
         <PrivateRoute exact path="/"
           appProps={{ allowed: appProps.authenticated, ...appProps }}

@@ -3,14 +3,14 @@ import Buttons from "./Buttons";
 import Form from "./Form";
 
 import { Hub, Auth } from "aws-amplify";
-import { FaSignOutAlt } from "react-icons/fa";
+//import { FaSignOutAlt } from "react-icons/fa";
 
 const initialUserState = { user: null, loading: true };
 
 function Login(props) {
   const [userState, dispatch] = useReducer(reducer, initialUserState);
   const [formState, updateFormState] = useState("base");
-  console.log('login', props);
+  console.log("login", props);
   useEffect(() => {
     // set listener for auth events
     Hub.listen("auth", (data) => {
@@ -33,7 +33,7 @@ function Login(props) {
     }
   }, []);
 
-  // This renders the custom form
+  // This renders the sign in/sign up form
   if (formState === "email") {
     return (
       <div style={styles.appContainer}>
@@ -45,7 +45,7 @@ function Login(props) {
 
   return (
     <div style={styles.appContainer}>
-   
+      <h1>Welcome to Photo Share</h1>
       {
         userState.loading && (
           <div style={styles.body}>
@@ -55,6 +55,7 @@ function Login(props) {
       }
       {
         !userState.user && !userState.loading && (
+          //render sign in buttons,passing updateFormState as props to Buttons component 
           <Buttons
             updateFormState={updateFormState}
           />
@@ -63,15 +64,7 @@ function Login(props) {
       {
         userState.user && userState.user.signInUserSession && (
           <div style={styles.body}>
-            <h4>
-              You are signed in as {userState.user.signInUserSession.idToken.payload.email}
-            </h4>
-            <button
-              style={{ ...styles.button, ...styles.signOut }}
-              onClick={signOut}>
-              <FaSignOutAlt color='white' />
-              <p style={{...styles.text}}>Sign out/Switch account</p> 
-            </button>
+            <Buttons />
           </div>
         )
       }
@@ -94,7 +87,7 @@ function reducer (state, action) {
 async function checkUser(dispatch) {
   try {
     const user = await Auth.currentAuthenticatedUser();
-    console.log('user: ', user)
+    console.log("user: ", user);
     dispatch({ type: "setUser", user });
   } catch (err) {
     //console.log('err: ', err)
@@ -102,13 +95,14 @@ async function checkUser(dispatch) {
   }
 }
 
-function signOut() {
-  Auth.signOut({global:true});
-}
+// function signOut() {
+//   Auth.signOut({global:true});
+// }
 
 
 
 const styles = {
+  
   appContainer: {
     paddingTop: 85,
   },
