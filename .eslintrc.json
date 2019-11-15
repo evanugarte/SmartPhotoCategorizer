@@ -46,6 +46,32 @@
                 ]
             }
         ],
-        "no-console": ["error", { "allow": ["debug", "error"] }]
+        "no-console": [
+            "error",
+            {
+                "allow": [
+                    "error"
+                ]
+            }
+        ],
+        "block-spacing": "error",
+        "keyword-spacing": "error",
+        "space-before-function-paren": [
+            "error",
+            {
+                "asyncArrow": "always"
+            }
+        ],
+        "max-len": [
+            2,
+            {
+                "code": 80
+            }
+        ],
+        "comma-spacing": "error",
+        "multiline-comment-style": [
+            "error",
+            "separate-lines"
+        ]
     }
 }

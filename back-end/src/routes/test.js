@@ -1,5 +1,6 @@
 var AWS = require("aws-sdk");
-var uuid = require("uuid"); // Use this later to generate a unique identifier to prevent collisions?
+// Use this later to generate a unique identifier to prevent collisions?
+var uuid = require("uuid");
 var fs = require("fs");
 
 // Set the Region. us-west-1 is Northern California.

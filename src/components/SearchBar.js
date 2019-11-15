@@ -5,11 +5,11 @@ import {
   Button
 } from "reactstrap";
 
-function SearchBar(props) {
+function SearchBar (props) {
 
   const [query, setQuery] = useState("");
 
-  function submitQuery(e) {
+  function submitQuery (e) {
     e.preventDefault();
     if (query.length) props.history.push(`/category/${query}`);
   }

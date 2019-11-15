@@ -13,8 +13,10 @@ import FavoriteIcon from "@material-ui/icons/Favorite";
 import ShareIcon from "@material-ui/icons/Share";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { withStyles } from "@material-ui/core/styles";
+import { getProfileFileAction } from "../actions/updateProfileAction";
+import { connect } from "react-redux";
 
-const styles = theme => ({
+const styles = (theme) => ({
   card: {
     maxWidth: 9000
   },
@@ -48,7 +50,13 @@ const styles = theme => ({
 });
 
 class SocialPage extends Component {
-  render() {
+  componentWillMount () {
+    // TODO: need to get this userid from backend first
+    const query = { userid: "asd123" };
+    this.props.getProfileFileAction(query);
+  }
+  render () {
+    const { userInfo } = this.props.user;
     const classes = this.props.classes;
     return (
       <Grid container spacing={3} justify="center">
@@ -60,9 +68,8 @@ class SocialPage extends Component {
           <Card className={classes.card}>
             <CardHeader
               avatar={
-                <Avatar aria-label="recipe" className={classes.avatar}>
-                  R
-                </Avatar>
+                <Avatar src={userInfo.avatar ? userInfo.avatar.data : null}
+                  aria-label="recipe" className={classes.avatar} />
               }
               action={
                 <IconButton aria-label="settings">
@@ -74,7 +81,8 @@ class SocialPage extends Component {
             />
             <CardMedia
               className={classes.media}
-              image="https://images.tienda.com/is/image/LaTienda/mixed-seafood-paella?&wid=1136"
+              image={"https://images.tienda.com/is/image/" +
+                "LaTienda/mixed-seafood-paella?&wid=1136"}
               title="Paella dish"
             />
             <CardContent>
@@ -99,4 +107,12 @@ class SocialPage extends Component {
   }
 }
 
-export default withStyles(styles)(SocialPage);
+const mapStateToProps = (state) => ({
+  user: state.user
+  //TODO: need to get this userid from backend first
+});
+
+export default connect(
+  mapStateToProps,
+  { getProfileFileAction }
+)(withStyles(styles, { withTheme: true })(SocialPage));

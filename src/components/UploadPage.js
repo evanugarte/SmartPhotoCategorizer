@@ -1,14 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 import { FilePond, registerPlugin } from "react-filepond";
-import FilePondPluginImageExifOrientation from "filepond-plugin-image-exif-orientation";
+import FilePondPluginImageExifOrientation
+  from "filepond-plugin-image-exif-orientation";
 import FilePondPluginImagePreview from "filepond-plugin-image-preview";
-import FilePondPluginFileValidateType from "filepond-plugin-file-validate-type";
+import FilePondPluginFileValidateType
+  from "filepond-plugin-file-validate-type";
 import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import "filepond/dist/filepond.min.css";
 import { withStyles } from "@material-ui/core/styles";
 import { Button, TextField } from "@material-ui/core";
-
 import { uploadFileAction } from "../actions/uploadFileAction";
 
 registerPlugin(
@@ -29,7 +30,7 @@ const styles = theme => ({
 });
 
 class UploadPage extends Component {
-  constructor() {
+  constructor () {
     super();
     this.state = {
       title: "",
@@ -42,11 +43,11 @@ class UploadPage extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  onChange(e) {
+  onChange (e) {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  onSubmit(e) {
+  onSubmit (e) {
     e.preventDefault();
     const { title, description, file } = this.state;
     const uploadData = {
@@ -61,7 +62,7 @@ class UploadPage extends Component {
     this.props.uploadFileAction(uploadData, this.props.history);
   }
 
-  render() {
+  render () {
     return (
       <div
         style={{

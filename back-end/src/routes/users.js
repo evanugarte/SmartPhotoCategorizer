@@ -5,11 +5,13 @@ const multer = require("multer");
 const upload = multer();
 
 /* GET users listing. */
-router.get("/", function(req, res, next) {
+router.get("/", function (req, res, next) {
   res.send("respond with a resource");
 });
 
 router.post("/upload", upload.single("file"), api.uploadFile);
+router.post("/updateprofile", upload.single("file"), api.updateProfile);
+router.post("/getprofile", upload.single("file"), api.getprofile);
 router.get("/getPhotoSocial", api.getPhotoSocial);
 router.get("/getPhotoByTag", api.getPhotoByTag);
 router.get("/getTags", api.getTags);
