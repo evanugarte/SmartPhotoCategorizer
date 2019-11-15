@@ -18,7 +18,7 @@ export const updateProfileFileAction = (file, history) => dispatch => {
       });
       history.push("/");      
     })
-    .catch(err => console.debug(err));
+    .catch(err => console.error(err));
 };
 
 export const getProfileFileAction = (query, history) => dispatch => {
@@ -30,6 +30,6 @@ export const getProfileFileAction = (query, history) => dispatch => {
         payload: res.data
       });
     })
-    .catch(err => console.debug(err));
+    .catch(err => console.error(err));
 };
   
