@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Container, FormGroup, Label, Input, Button } from "reactstrap";
 
-function LoginPage() {
+function LoginPage () {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -11,7 +11,7 @@ function LoginPage() {
     { text: "Password", name: "password", setCredential: setPassword }
   ];
 
-  function formEmpty() {
+  function formEmpty () {
     return email.length && password.length;
   }
 

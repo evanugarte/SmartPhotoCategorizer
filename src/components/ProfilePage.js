@@ -5,7 +5,10 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import "filepond/dist/filepond.min.css";
 import { withStyles } from "@material-ui/core/styles";
 import { Button, TextField } from "@material-ui/core";
-import { updateProfileFileAction, getProfileFileAction } from "../actions/updateProfileAction";
+import {
+  updateProfileFileAction,
+  getProfileFileAction
+} from "../actions/updateProfileAction";
 import InputLabel from "@material-ui/core/InputLabel";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Visibility from "@material-ui/icons/Visibility";
@@ -27,7 +30,7 @@ const styles = (theme) => ({
 });
 
 class ProfilePage extends Component {
-  constructor() {
+  constructor () {
     super();
     this.state = {
       email: null,
@@ -41,12 +44,12 @@ class ProfilePage extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  componentWillMount() {
+  componentWillMount () {
     if (this.props.user.userInfo.userid === null) {
       this.props.history.push("/");
     }
   }
-  componentDidMount() {
+  componentDidMount () {
     if (this.props.user.userInfo.userid === null) {
       this.props.history.push("/");
     } else {
@@ -58,11 +61,11 @@ class ProfilePage extends Component {
     }
   }
 
-  onChange(e) {
+  onChange (e) {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  onSubmit(e) {
+  onSubmit (e) {
     e.preventDefault();
     const { password, file } = this.state;
     const profileData = {
@@ -83,7 +86,7 @@ class ProfilePage extends Component {
     event.preventDefault();
   };
 
-  render() {
+  render () {
     const { userInfo } = this.props.user;
     return (
       <div
@@ -118,7 +121,8 @@ class ProfilePage extends Component {
         >
           {this.state.upload ? null : <CardMedia
             style={{ width: 240, height: 290 }}
-            image={this.state.file ? this.state.file.data : require("./user.png")}
+            image={this.state.file ?
+              this.state.file.data : require("./user.png")}
           />}
           <div>
             <FilePond
@@ -153,7 +157,9 @@ class ProfilePage extends Component {
           />
 
           <FormControl variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+            <InputLabel htmlFor="outlined-adornment-password">
+              Password
+            </InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
               name="password"
@@ -168,7 +174,8 @@ class ProfilePage extends Component {
                     onClick={this.handleClickShowPassword}
                     onMouseDown={this.handleMouseDownPassword}
                   >
-                    {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                    {this.state.showPassword ?
+                      <Visibility /> : <VisibilityOff />}
                   </IconButton>
                 </InputAdornment>
               }

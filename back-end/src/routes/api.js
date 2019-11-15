@@ -1,6 +1,7 @@
 // Load the SDK for JavaScript
 var AWS = require("aws-sdk");
-var uuid = require("uuid"); // Use this later to generate a unique identifier to prevent collisions?
+// Use this later to generate a unique identifier to prevent collisions?
+var uuid = require("uuid");
 //var fs = require('fs');
 const config = require("../../config/config");
 
@@ -54,7 +55,8 @@ const uploadFile = (request, response) => {
           };
 
           // Detect labels with Rekognition
-          const rekogData = await rekognition.detectLabels(rekogParams).promise();
+          const rekogData =
+            await rekognition.detectLabels(rekogParams).promise();
           const labels = rekogData.Labels;
           var labelNames = [];
           labels.forEach(async (label) => {
@@ -63,7 +65,8 @@ const uploadFile = (request, response) => {
 
             // Set up dynamoDB params
             const d = new Date();
-            var uploadDate = (d.getMonth() + 1) + "/" + d.getDate() + "/" + d.getFullYear();
+            var uploadDate = (d.getMonth() + 1) + "/" +
+              d.getDate() + "/" + d.getFullYear();
             var fileParams = {
               TableName: "Files",
               Item: {
@@ -97,7 +100,8 @@ const uploadFile = (request, response) => {
 /**
  * Retrieve all photos uploaded by user.
  * @param {email: String} request 
- * @param {[{photo: Object, desc: String, uploadDate: String, title: String, likes: String}]} response 
+ * @param {[{photo: Object, desc: String,
+ * uploadDate: String, title: String, likes: String}]} response 
  */
 const getPhotoSocial = (request, response) => {
   (async () => {
@@ -108,7 +112,8 @@ const getPhotoSocial = (request, response) => {
     // For now this will be in the headers. Modify later maybe.
     if (reqEmail) {
       try {
-        // Query for information based on input email. Use email index to search.
+        // Query for information based on input email.
+        // Use email index to search.
         var queryParams = {
           TableName: "Files",
           IndexName: "email-file-index",
@@ -195,7 +200,8 @@ const updateProfile = (request, response) => {
         const uploadAvatar = await s3.upload(uploadParams).promise();
         dynamodb.update(updateProfileParams, (err, data) => {
           if (err) {
-            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+            console.error("Unable to update item. Error JSON:",
+              JSON.stringify(err, null, 2));
             response.status(statusCode).send(message);
 
           } else {
@@ -227,7 +233,8 @@ const updateProfile = (request, response) => {
       try {
         dynamodb.update(updateProfileParams, (err, data) => {
           if (err) {
-            console.error("Unable to update item. Error JSON:", JSON.stringify(err, null, 2));
+            console.error("Unable to update item. Error JSON:",
+              JSON.stringify(err, null, 2));
             response.status(statusCode).send(err);
 
           } else {
@@ -379,7 +386,8 @@ const getTags = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "Nothing to see here folks";
-    // I assume this line is supposed to check if the user is authenticated. Replace once authentication is done.
+    // I assume this line is supposed to check if the user is authenticated.
+    // Replace once authentication is done.
     try {
       var scanParams = {
         TableName: "Files",

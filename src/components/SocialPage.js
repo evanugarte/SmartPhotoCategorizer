@@ -50,11 +50,12 @@ const styles = (theme) => ({
 });
 
 class SocialPage extends Component {
-  componentWillMount() {
-    const query = { userid: "asd123" }; //TODO: need to get this userid from backend first
+  componentWillMount () {
+    // TODO: need to get this userid from backend first
+    const query = { userid: "asd123" };
     this.props.getProfileFileAction(query);
   }
-  render() {
+  render () {
     const { userInfo } = this.props.user;
     const classes = this.props.classes;
     return (
@@ -67,7 +68,8 @@ class SocialPage extends Component {
           <Card className={classes.card}>
             <CardHeader
               avatar={
-                <Avatar src={userInfo.avatar ? userInfo.avatar.data : null} aria-label="recipe" className={classes.avatar} />
+                <Avatar src={userInfo.avatar ? userInfo.avatar.data : null}
+                  aria-label="recipe" className={classes.avatar} />
               }
               action={
                 <IconButton aria-label="settings">
@@ -79,7 +81,8 @@ class SocialPage extends Component {
             />
             <CardMedia
               className={classes.media}
-              image="https://images.tienda.com/is/image/LaTienda/mixed-seafood-paella?&wid=1136"
+              image={"https://images.tienda.com/is/image/" +
+                "LaTienda/mixed-seafood-paella?&wid=1136"}
               title="Paella dish"
             />
             <CardContent>

@@ -15,7 +15,7 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 
-function Navigation(props) {
+function Navigation (props) {
   const [isOpen, toggleOpen] = useState(false);
   const [dropdownOpen, toggleDropdownOpen] = useState(false);
   const navLinks = [
@@ -25,7 +25,7 @@ function Navigation(props) {
   ];
   
 
-  function getDropDown() {
+  function getDropDown () {
     if (props.authed) {
       return (
         <Dropdown
