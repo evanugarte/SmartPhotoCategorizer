@@ -3,7 +3,7 @@ import { Route, Switch, Redirect } from "react-router-dom";
 import { PrivateRoute } from "./PrivateRoute";
 
 //import components
-import LoginPage from "./components/LoginPage";
+
 import CategoriesPage from "./components/CategoriesPage";
 import PhotoList from "./components/PhotoList";
 import SocialPage from "./components/SocialPage";

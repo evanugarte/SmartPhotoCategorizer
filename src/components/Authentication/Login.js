@@ -10,7 +10,7 @@ const initialUserState = { user: null, loading: true };
 function Login(props) {
   const [userState, dispatch] = useReducer(reducer, initialUserState);
   const [formState, updateFormState] = useState("base");
-  console.log("login", props);
+  //console.log("login", props);
   useEffect(() => {
     // set listener for auth events
     Hub.listen("auth", (data) => {
@@ -31,7 +31,7 @@ function Login(props) {
     if (!window.location.search.includes("?signedin=true")) {
       checkUser(dispatch); 
     }
-  }, []);
+  });
 
   // This renders the sign in/sign up form
   if (formState === "email") {
@@ -87,7 +87,7 @@ function reducer (state, action) {
 async function checkUser(dispatch) {
   try {
     const user = await Auth.currentAuthenticatedUser();
-    console.log("user: ", user);
+    //console.log("user: ", user);
     dispatch({ type: "setUser", user });
   } catch (err) {
     //console.log('err: ', err)
