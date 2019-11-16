@@ -30,7 +30,7 @@ const styles = (theme) => ({
 });
 
 class ProfilePage extends Component {
-  constructor () {
+  constructor() {
     super();
     this.state = {
       email: null,
@@ -44,12 +44,12 @@ class ProfilePage extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  componentWillMount () {
+  componentWillMount() {
     if (this.props.user.userInfo.userid === null) {
       this.props.history.push("/");
     }
   }
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.user.userInfo.userid === null) {
       this.props.history.push("/");
     } else {
@@ -61,11 +61,11 @@ class ProfilePage extends Component {
     }
   }
 
-  onChange (e) {
+  onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  onSubmit (e) {
+  onSubmit(e) {
     e.preventDefault();
     const { password, file } = this.state;
     const profileData = {
@@ -86,7 +86,7 @@ class ProfilePage extends Component {
     event.preventDefault();
   };
 
-  render () {
+  render() {
     const { userInfo } = this.props.user;
     return (
       <div

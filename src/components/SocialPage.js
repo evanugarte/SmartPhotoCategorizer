@@ -50,12 +50,12 @@ const styles = (theme) => ({
 });
 
 class SocialPage extends Component {
-  componentWillMount () {
+  componentWillMount() {
     // TODO: need to get this userid from backend first
     const query = { userid: "asd123" };
     this.props.getProfileFileAction(query);
   }
-  render () {
+  render() {
     const { userInfo } = this.props.user;
     const classes = this.props.classes;
     return (
