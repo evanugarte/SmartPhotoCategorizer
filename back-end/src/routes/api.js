@@ -103,7 +103,7 @@ const getPhotoSocial = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "User does not exist";
-    const reqEmail = request.body.email;
+    const reqEmail = request.query.email;
     
     // For now this will be in the headers. Modify later maybe.
     if (reqEmail) {
@@ -173,7 +173,7 @@ const getPhotoByTag = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "Empty";
-    const reqTag = request.body.tag;
+    const reqTag = request.query.tag;
     if (reqTag) {
       try {
         var queryParams = {
