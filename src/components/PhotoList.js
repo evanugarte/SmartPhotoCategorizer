@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import { Row, Col, Button } from "reactstrap";
 import image from "./black.png";
 
-function PhotoList() {
+function PhotoList () {
 
   const images = [
     { name: "IMG_2013", uploadDate: "12/20/19", image: image },

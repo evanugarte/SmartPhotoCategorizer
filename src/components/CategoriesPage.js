@@ -8,7 +8,7 @@ import SearchBar from "./SearchBar";
 import img from "./black.png";
 import "../App.css";
 
-function Employees(props) {
+function Employees (props) {
 
   const categories = [
     { name: "nature", count: 10 },
@@ -16,12 +16,13 @@ function Employees(props) {
     { name: "cars", count: 19 }
   ];
 
-  function renderPersonEntries() {
+  function renderPersonEntries () {
     return (
       categories.map((category, index) => {
         return (
           <Card key={index} style={{ width: "70%" }}>
-            <CardImg top style={{ width: "50%" }} src={img} alt="Card image cap" />
+            <CardImg top style={{ width: "50%" }}
+              src={img} alt="Card image cap" />
             <CardBody>
               <CardTitle>{category.name}</CardTitle>
               <CardSubtitle>{category.count} photos</CardSubtitle>
