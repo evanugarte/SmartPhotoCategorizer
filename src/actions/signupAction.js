@@ -11,5 +11,5 @@ export const signupAction = (user, history) => dispatch => {
         payload: res.data
       });
     })
-    .catch(err => console.debug(err));
+    .catch(err => console.error(err));
 };

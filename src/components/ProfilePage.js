@@ -153,7 +153,8 @@ class ProfilePage extends Component {
           />
 
           <FormControl variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">Password</InputLabel>
+            <InputLabel htmlFor="outlined-adornment-password">
+            Password</InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
               name="password"
@@ -168,7 +169,8 @@ class ProfilePage extends Component {
                     onClick={this.handleClickShowPassword}
                     onMouseDown={this.handleMouseDownPassword}
                   >
-                    {this.state.showPassword ? <Visibility /> : <VisibilityOff />}
+                    {this.state.showPassword ? 
+                      <Visibility /> : <VisibilityOff />}
                   </IconButton>
                 </InputAdornment>
               }

@@ -18,5 +18,5 @@ export const uploadFileAction = (file, history) => dispatch => {
         payload: res.data
       });
     })
-    .catch(err => console.debug(err));
+    .catch(err => console.error(err));
 };

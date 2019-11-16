@@ -10,7 +10,7 @@ import SocialPage from "./components/SocialPage";
 import UploadPage from "./components/UploadPage";
 import ProfilePage from "./components/ProfilePage";
 
-function Routing({ appProps }) {
+function Routing ({ appProps }) {
   const signedOutRoutes = [
     { path: "/login", C: LoginPage },
   ];

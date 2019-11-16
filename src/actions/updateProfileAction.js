@@ -32,4 +32,3 @@ export const getProfileFileAction = (query, history) => dispatch => {
     })
     .catch(err => console.error(err));
 };
-  

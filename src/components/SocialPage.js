@@ -18,7 +18,7 @@ import { getPicsSocialAction } from "../actions/getPicsSocialAction";
 
 import { connect } from "react-redux";
 
-const styles = theme => ({
+const styles = (theme) => ({
   card: {
     maxWidth: 9000
   },
@@ -52,8 +52,9 @@ const styles = theme => ({
 });
 
 class SocialPage extends Component {
-  componentWillMount(){
-    // const query = {userid: "asd123", email:"dummyemail@gmail.com"}; //TODO: need to get this userid, email from backend first
+  componentWillMount (){
+    // const query = {userid: "asd123", email:"dummyemail@gmail.com"}; 
+    //TODO: need to get this userid, email from backend first
     const {userInfo} = this.props.user;
     this.props.getPicsSocialAction(userInfo);
 
@@ -61,24 +62,26 @@ class SocialPage extends Component {
   }
 
 
-  render() {
+  render () {
     const {userInfo} = this.props.user;
     const {photoData} = this.props.photos;
     const classes = this.props.classes;
 
     const RenderSocialPost = () => {
       if (photoData != null){
-        return(
+        return (
           <Grid container spacing={3}  direction="column"
-          justify="center"
-          alignItems="center" >
+            justify="center"
+            alignItems="center" >
             {photoData.map(photo => {
-              return(
+              return (
                 <Grid item xs={6}>
                   <Card className={classes.card}>
                     <CardHeader
                       avatar={
-                        <Avatar src={userInfo.avatar ? userInfo.avatar.data : null} aria-label="recipe" className={classes.avatar} />
+                        <Avatar 
+                          src={userInfo.avatar ? userInfo.avatar.data : null} 
+                          aria-label="recipe" className={classes.avatar} />
                       }
                       action={
                         <IconButton aria-label="settings">
@@ -93,9 +96,14 @@ class SocialPage extends Component {
                       title="Paella dish"
                     />
                     <CardContent>
-                      <Typography variant="body2" color="textSecondary" component="p">
-                        This impressive paella is a perfect party dish and a fun meal to
-                        cook together with your guests. Add 1 cup of frozen peas along
+                      <Typography 
+                        variant="body2" 
+                        color="textSecondary" 
+                        component="p">
+                        This impressive paella is a perfect party 
+                        dish and a fun meal to
+                        cook together with your guests. 
+                        Add 1 cup of frozen peas along
                         with the mussels, if you like.
                       </Typography>
                     </CardContent>
@@ -118,10 +126,10 @@ class SocialPage extends Component {
       }
     };
     
-    console.debug("social page photo data-", photoData);
+console.debug("social page photo data-", photoData);
     return (
       
-        <RenderSocialPost/>
+      <RenderSocialPost/>
       
     );
   }
