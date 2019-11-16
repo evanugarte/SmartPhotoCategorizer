@@ -101,12 +101,17 @@ const uploadFile = (request, response) => {
  */
 const getPhotoSocial = (request, response) => {
   (async () => {
+    // console.log('getPhotoSocial-request.query',request.query);
+    // console.log('getPhotoSocial-request.body',request.body);
+
     var statusCode = 400;
     var message = "User does not exist";
-    const reqEmail = request.body.email;
-    
+    const reqEmail = request.query.email;
+    // console.debug(reqEmail);
+
     // For now this will be in the headers. Modify later maybe.
     if (reqEmail) {
+
       try {    
         // Query for information based on input email. Use email index to search.
         var queryParams = {
@@ -121,6 +126,8 @@ const getPhotoSocial = (request, response) => {
           }
         };
         const queryData = await dynamodb.query(queryParams).promise();
+      
+        // console.debug(queryData);
         const items = queryData.Items;
 
         var responseData = [];
@@ -130,16 +137,17 @@ const getPhotoSocial = (request, response) => {
           if (items[i].file === prevFile) {
             continue;
           }
-
+        
           // Get picture data from S3 to send in response.
           var getParams = {
             Bucket: BUCKET_NAME,
             Key: items[i].file
           };
           var photoData = await s3.getObject(getParams).promise();
-          
+          // console.debug(photoData);
+
           responseObject = {
-            photo: photoData.Body.buffer,
+            photo: photoData.Body,
             title: items[i].title,
             desc: items[i].desc,
             likes: items[i].likes,
@@ -153,13 +161,17 @@ const getPhotoSocial = (request, response) => {
         response.status(statusCode).send(responseData);
       }
       catch(e) {
+
         console.error("Could not retrieve photos", e);
       }
     }
     else {
+    
       response.status(statusCode).send(message);
     }
   })().catch(e => {
+
+
     console.error("Something went wrong", e);
   });
 };

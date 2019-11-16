@@ -1,8 +1,12 @@
 import { UPDATE_PROFILE, GET_PROFILE } from "../actions/types";
 
 
+// const initialState = {
+//   userInfo: {avatar: null, email: null, password: null, userid: null}
+// };
+//TODO: remove dummy email below
 const initialState = {
-  userInfo: {avatar: null, email: null, password: null, userid: null}
+  userInfo: {avatar: null, email: "dummyemail@gmail.com", password: null, userid: "asd123"}
 };
 
 function arrayBufferToBase64(buffer) {
