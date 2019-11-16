@@ -152,7 +152,7 @@ const getPhotoSocial = (request, response) => {
           };
 
           responseData.push(responseObject);
-          prevTitle = items[i].title;
+          prevFile = items[i].file;
         }
         statusCode = 200;
         response.status(statusCode).send(responseData);
