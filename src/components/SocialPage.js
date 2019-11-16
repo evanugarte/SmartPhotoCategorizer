@@ -20,7 +20,7 @@ import { connect } from "react-redux";
 
 const styles = (theme) => ({
   card: {
-    maxWidth: 9000
+    width: 550,
   },
   media: {
     height: 0,
@@ -53,11 +53,9 @@ const styles = (theme) => ({
 
 class SocialPage extends Component {
   componentWillMount (){
-    // const query = {userid: "asd123", email:"dummyemail@gmail.com"}; 
     //TODO: need to get this userid, email from backend first
     const {userInfo} = this.props.user;
     this.props.getPicsSocialAction(userInfo);
-
     this.props.getProfileFileAction(userInfo);
   }
 
@@ -75,7 +73,7 @@ class SocialPage extends Component {
             alignItems="center" >
             {photoData.map(photo => {
               return (
-                <Grid item xs={6}>
+                <Grid item xs={6} key={photo.title}>
                   <Card className={classes.card}>
                     <CardHeader
                       avatar={
@@ -88,7 +86,7 @@ class SocialPage extends Component {
                           <MoreVertIcon />
                         </IconButton>
                       }
-                      subheader="September 14, 2016"
+                      subheader={photo.uploadDate}
                     />
                     <CardMedia
                       className={classes.media}
@@ -100,16 +98,12 @@ class SocialPage extends Component {
                         variant="body2" 
                         color="textSecondary" 
                         component="p">
-                        This impressive paella is a perfect party 
-                        dish and a fun meal to
-                        cook together with your guests. 
-                        Add 1 cup of frozen peas along
-                        with the mussels, if you like.
+                        {photo.desc}
                       </Typography>
                     </CardContent>
                     <CardActions disableSpacing>
                       <IconButton aria-label="add to favorites">
-                        <FavoriteIcon />
+                        <FavoriteIcon /> {photo.likes}
                       </IconButton>
                       <IconButton aria-label="share">
                         <ShareIcon />
@@ -126,11 +120,8 @@ class SocialPage extends Component {
       }
     };
     
-console.debug("social page photo data-", photoData);
     return (
-      
       <RenderSocialPost/>
-      
     );
   }
 }

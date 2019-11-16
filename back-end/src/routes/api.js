@@ -105,9 +105,6 @@ const uploadFile = (request, response) => {
  */
 const getPhotoSocial = (request, response) => {
   (async () => {
-    // console.log('getPhotoSocial-request.query',request.query);
-    // console.log('getPhotoSocial-request.body',request.body);
-
     var statusCode = 400;
     var message = "User does not exist";
     const reqEmail = request.query.email;
@@ -128,8 +125,7 @@ const getPhotoSocial = (request, response) => {
           }
         };
         const queryData = await dynamodb.query(queryParams).promise();
-      
-        // console.debug(queryData);
+
         const items = queryData.Items;
 
         var responseData = [];
@@ -166,12 +162,9 @@ const getPhotoSocial = (request, response) => {
       }
     }
     else {
-    
       response.status(statusCode).send(message);
     }
   })().catch(e => {
-
-
     console.error("Something went wrong", e);
   });
 };
