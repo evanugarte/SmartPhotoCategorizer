@@ -109,9 +109,13 @@ const getPhotoSocial = (request, response) => {
     var message = "User does not exist";
     const reqEmail = request.query.email;
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     
 >>>>>>> replaced request.body with request.query for get requests
+=======
+
+>>>>>>> merged with updated master
     // For now this will be in the headers. Modify later maybe.
     if (reqEmail) {
       try {
