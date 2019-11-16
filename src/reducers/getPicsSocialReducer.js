@@ -12,7 +12,7 @@ function arrayBufferToBase64 (buffer) {
 export default function (state = initialState, action) {
   switch (action.type) {
   case GET_PICS_SOCIAL:
-    action.payload.map(item => {
+    action.payload.forEach(item => {
       if (item.photo !== null){
         var base64Flag = "data:image/jpeg;base64,";
         var imageStr = arrayBufferToBase64(item.photo.data);
