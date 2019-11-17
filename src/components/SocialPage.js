@@ -15,7 +15,6 @@ import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { withStyles } from "@material-ui/core/styles";
 import { getProfileFileAction } from "../actions/updateProfileAction";
 import { getPicsSocialAction } from "../actions/getPicsSocialAction";
-
 import { connect } from "react-redux";
 
 const styles = (theme) => ({
@@ -52,23 +51,23 @@ const styles = (theme) => ({
 });
 
 class SocialPage extends Component {
-  componentWillMount(){
+  componentWillMount() {
     //TODO: need to get this userid, email from backend first
-    const {userInfo} = this.props.user;
+    const { userInfo } = this.props.user;
     this.props.getPicsSocialAction(userInfo);
     this.props.getProfileFileAction(userInfo);
   }
 
 
   render() {
-    const {userInfo} = this.props.user;
-    const {photoData} = this.props.photos;
+    const { userInfo } = this.props.user;
+    const { photoData } = this.props.photos;
     const classes = this.props.classes;
 
     const RenderSocialPost = () => {
-      if (photoData != null){
+      if (photoData != null) {
         return (
-          <Grid container spacing={3}  direction="column"
+          <Grid container spacing={3} direction="column"
             justify="center"
             alignItems="center" >
             {photoData.map(photo => {
@@ -77,8 +76,8 @@ class SocialPage extends Component {
                   <Card className={classes.card}>
                     <CardHeader
                       avatar={
-                        <Avatar 
-                          src={userInfo.avatar ? userInfo.avatar.data : null} 
+                        <Avatar
+                          src={userInfo.avatar ? userInfo.avatar.data : null}
                           aria-label="recipe" className={classes.avatar} />
                       }
                       action={
@@ -94,9 +93,9 @@ class SocialPage extends Component {
                       title="Paella dish"
                     />
                     <CardContent>
-                      <Typography 
-                        variant="body2" 
-                        color="textSecondary" 
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
                         component="p">
                         {photo.desc}
                       </Typography>
@@ -119,9 +118,9 @@ class SocialPage extends Component {
         return <div></div>;
       }
     };
-    
+
     return (
-      <RenderSocialPost/>
+      <RenderSocialPost />
     );
   }
 }

@@ -5,8 +5,10 @@ import "filepond-plugin-image-preview/dist/filepond-plugin-image-preview.css";
 import "filepond/dist/filepond.min.css";
 import { withStyles } from "@material-ui/core/styles";
 import { Button, TextField } from "@material-ui/core";
-import { updateProfileFileAction, 
-  getProfileFileAction } from "../actions/updateProfileAction";
+import {
+  updateProfileFileAction,
+  getProfileFileAction
+} from "../actions/updateProfileAction";
 import InputLabel from "@material-ui/core/InputLabel";
 import InputAdornment from "@material-ui/core/InputAdornment";
 import Visibility from "@material-ui/icons/Visibility";
@@ -77,7 +79,7 @@ class ProfilePage extends Component {
   }
 
   handleClickShowPassword = () => {
-    this.setState({showPassword: !this.state.showPassword });
+    this.setState({ showPassword: !this.state.showPassword });
   };
 
   handleMouseDownPassword = (event) => {
@@ -116,10 +118,10 @@ class ProfilePage extends Component {
             flexDirection: "column"
           }}
           onSubmit={this.onSubmit}
-        > 
-          {this.state.upload ? null :  <CardMedia
+        >
+          {this.state.upload ? null : <CardMedia
             style={{ width: 240, height: 290 }}
-            image={this.state.file ? 
+            image={this.state.file ?
               this.state.file.data : require("./user.png")}
           />}
           <div>
@@ -150,12 +152,13 @@ class ProfilePage extends Component {
             value={this.state.email}
             margin="normal"
             variant="outlined"
-            style={{marginBottom: 10}}
+            style={{ marginBottom: 10 }}
           />
 
           <FormControl variant="outlined">
             <InputLabel htmlFor="outlined-adornment-password">
-            Password</InputLabel>
+              Password
+            </InputLabel>
             <OutlinedInput
               id="outlined-adornment-password"
               name="password"
@@ -170,7 +173,7 @@ class ProfilePage extends Component {
                     onClick={this.handleClickShowPassword}
                     onMouseDown={this.handleMouseDownPassword}
                   >
-                    {this.state.showPassword ? 
+                    {this.state.showPassword ?
                       <Visibility /> : <VisibilityOff />}
                   </IconButton>
                 </InputAdornment>
@@ -183,8 +186,7 @@ class ProfilePage extends Component {
             type="submit"
             variant="contained"
             color="default"
-            style={{ marginTop: 10, marginBottom: 15 }}
-          >
+            style={{ marginTop: 10, marginBottom: 15 }} >
             Save Changes
           </Button>
         </form>

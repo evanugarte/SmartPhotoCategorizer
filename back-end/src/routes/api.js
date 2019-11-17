@@ -20,7 +20,6 @@ var s3 = new AWS.S3();
 var rekognition = new AWS.Rekognition();
 var dynamodb = new AWS.DynamoDB.DocumentClient();
 
-
 const uploadFile = (request, response) => {
   (async () => {
     var statusCode = 400;
@@ -125,9 +124,7 @@ const getPhotoSocial = (request, response) => {
           }
         };
         const queryData = await dynamodb.query(queryParams).promise();
-
         const items = queryData.Items;
-
         var responseData = [];
         // Loop through photos to send all object data
         prevFile = "";
@@ -288,7 +285,6 @@ const getprofile = (request, response) => {
           } catch (e) {
             console.error("can not find the photo", e);
             response.status(statusCode).send(e);
-
           }
         } else {
           responseObject = {
@@ -304,13 +300,10 @@ const getprofile = (request, response) => {
       catch (e) {
         console.error("Could not retrieve information", e);
         response.status(statusCode).send(e);
-
       }
-    }
-    else {
+    } else {
       response.status(statusCode).send(message);
     }
-
   })().catch(e => {
     console.error(e);
     response.status(statusCode).send(e);
@@ -340,10 +333,8 @@ const getPhotoByTag = (request, response) => {
             ":tag": reqTag
           }
         };
-
         const queryData = await dynamodb.query(queryParams).promise();
         const items = queryData.Items;
-
         var responseData = [];
         // Loop through photos to send all object data
         for (let i = 0; i < items.length; i++) {
@@ -352,13 +343,11 @@ const getPhotoByTag = (request, response) => {
             Key: items[i].file
           };
           var photoData = await s3.getObject(getParams).promise();
-
           responseObject = {
             photo: photoData.Body.buffer,
             title: items[i].title,
             uploadDate: items[i].uploadDate
           };
-
           responseData.push(responseObject);
         }
         statusCode = 200;
@@ -367,8 +356,7 @@ const getPhotoByTag = (request, response) => {
       catch (e) {
         console.error("Could not retrieve information", e);
       }
-    }
-    else {
+    } else {
       response.status(statusCode).send(message);
     }
   })().catch(e => {
@@ -411,12 +399,10 @@ const getTags = (request, response) => {
           Key: items[i].file
         };
         var photoData = await s3.getObject(getParams).promise();
-
         var responseObject = {
           tag: items[i].tag,
           photo: photoData.Body.buffer
         };
-
         responseData.push(responseObject);
       }
       statusCode = 200;
@@ -429,6 +415,7 @@ const getTags = (request, response) => {
     console.error("User is not authenticated", e);
   });
 };
+
 module.exports = {
   uploadFile,
   updateProfile,
