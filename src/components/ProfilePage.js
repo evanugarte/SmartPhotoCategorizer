@@ -145,7 +145,6 @@ class ProfilePage extends Component {
             />
           </div>
 
-
           <TextField
             name="email"
             label="email"
@@ -187,8 +186,7 @@ class ProfilePage extends Component {
             type="submit"
             variant="contained"
             color="default"
-            style={{ marginTop: 10, marginBottom: 15 }}
-          >
+            style={{ marginTop: 10, marginBottom: 15 }} >
             Save Changes
           </Button>
         </form>

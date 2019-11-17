@@ -14,11 +14,12 @@ import ShareIcon from "@material-ui/icons/Share";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { withStyles } from "@material-ui/core/styles";
 import { getProfileFileAction } from "../actions/updateProfileAction";
+import { getPicsSocialAction } from "../actions/getPicsSocialAction";
 import { connect } from "react-redux";
 
 const styles = (theme) => ({
   card: {
-    maxWidth: 9000
+    width: 550,
   },
   media: {
     height: 0,
@@ -51,68 +52,86 @@ const styles = (theme) => ({
 
 class SocialPage extends Component {
   componentWillMount() {
-    // TODO: need to get this userid from backend first
-    const query = { userid: "asd123" };
-    this.props.getProfileFileAction(query);
+    //TODO: need to get this userid, email from backend first
+    const { userInfo } = this.props.user;
+    this.props.getPicsSocialAction(userInfo);
+    this.props.getProfileFileAction(userInfo);
   }
+
+
   render() {
     const { userInfo } = this.props.user;
+    const { photoData } = this.props.photos;
     const classes = this.props.classes;
+
+    const RenderSocialPost = () => {
+      if (photoData != null) {
+        return (
+          <Grid container spacing={3} direction="column"
+            justify="center"
+            alignItems="center" >
+            {photoData.map(photo => {
+              return (
+                <Grid item xs={6} key={photo.title}>
+                  <Card className={classes.card}>
+                    <CardHeader
+                      avatar={
+                        <Avatar
+                          src={userInfo.avatar ? userInfo.avatar.data : null}
+                          aria-label="recipe" className={classes.avatar} />
+                      }
+                      action={
+                        <IconButton aria-label="settings">
+                          <MoreVertIcon />
+                        </IconButton>
+                      }
+                      subheader={photo.uploadDate}
+                    />
+                    <CardMedia
+                      className={classes.media}
+                      image={photo.photo.data}
+                      title="Paella dish"
+                    />
+                    <CardContent>
+                      <Typography
+                        variant="body2"
+                        color="textSecondary"
+                        component="p">
+                        {photo.desc}
+                      </Typography>
+                    </CardContent>
+                    <CardActions disableSpacing>
+                      <IconButton aria-label="add to favorites">
+                        <FavoriteIcon /> {photo.likes}
+                      </IconButton>
+                      <IconButton aria-label="share">
+                        <ShareIcon />
+                      </IconButton>
+                    </CardActions>
+                  </Card>
+                </Grid>
+              );
+            })}
+          </Grid>
+        );
+      } else {
+        return <div></div>;
+      }
+    };
+
     return (
-      <Grid container spacing={3} justify="center">
-        <Grid item xs={12}>
-          <div className={classes.root}>
-          </div>
-        </Grid>
-        <Grid item xs={6}>
-          <Card className={classes.card}>
-            <CardHeader
-              avatar={
-                <Avatar src={userInfo.avatar ? userInfo.avatar.data : null}
-                  aria-label="recipe" className={classes.avatar} />
-              }
-              action={
-                <IconButton aria-label="settings">
-                  <MoreVertIcon />
-                </IconButton>
-              }
-              title="Shrimp and Chorizo Paella"
-              subheader="September 14, 2016"
-            />
-            <CardMedia
-              className={classes.media}
-              image={"https://images.tienda.com/is/image/" +
-                "LaTienda/mixed-seafood-paella?&wid=1136"}
-              title="Paella dish"
-            />
-            <CardContent>
-              <Typography variant="body2" color="textSecondary" component="p">
-                This impressive paella is a perfect party dish and a fun meal to
-                cook together with your guests. Add 1 cup of frozen peas along
-                with the mussels, if you like.
-              </Typography>
-            </CardContent>
-            <CardActions disableSpacing>
-              <IconButton aria-label="add to favorites">
-                <FavoriteIcon />
-              </IconButton>
-              <IconButton aria-label="share">
-                <ShareIcon />
-              </IconButton>
-            </CardActions>
-          </Card>
-        </Grid>
-      </Grid>
+      <RenderSocialPost />
     );
   }
 }
 
-const mapStateToProps = (state) => ({
-  user: state.user
-  //TODO: need to get this userid from backend first
+const mapStateToProps = state => ({
+  user: state.user,
+  photos: state.photos
+  //TODO: need to get this userid, email from backend first
 });
 
 export default connect(
   mapStateToProps,
-  { getProfileFileAction }
+  { getProfileFileAction, getPicsSocialAction }
 )(withStyles(styles, { withTheme: true })(SocialPage));
