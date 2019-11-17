@@ -55,10 +55,7 @@ jobs:
           key: dependency-cache-{{ checksum "package.json" }}
       - run:
           name: "get config base64 encoding"
-          command: echo $config_data > .temp
-      - run:
-          name: "decode base64 stuff"
-          command: base64 --decode .temp > src/config/config.js
+          command: echo $config_data | base64 -di > src/config/config.js
       - run: 
           name: "Build app"
           command: npm run build
