@@ -55,7 +55,6 @@ class SocialPage extends Component {
   componentWillMount(){
     //TODO: need to get this userid, email from backend first
     const {userInfo} = this.props.user;
-    
     this.props.getPicsSocialAction(userInfo);
     this.props.getProfileFileAction(userInfo);
   }
