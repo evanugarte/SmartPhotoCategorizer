@@ -10,20 +10,20 @@ export const updateProfileFileAction = (file, history) => dispatch => {
 
 
   axios
-    .post(" http://localhost:4000/users/updateprofile", formData)
+    .post("http://localhost:4000/users/updateprofile", formData)
     .then(res => {
       dispatch({
         type: UPDATE_PROFILE,
         payload: res.data
       });
-      history.push("/");      
+      history.push("/");
     })
     .catch(err => console.error(err));
 };
 
 export const getProfileFileAction = (query, history) => dispatch => {
   axios
-    .get(" http://localhost:4000/users/getprofile", {params: query})
+    .get("http://localhost:4000/users/getprofile", {params:query})
     .then(res => {
       dispatch({
         type: GET_PROFILE,

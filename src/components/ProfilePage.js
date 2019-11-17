@@ -28,7 +28,7 @@ const styles = (theme) => ({
 });
 
 class ProfilePage extends Component {
-  constructor () {
+  constructor() {
     super();
     this.state = {
       email: null,
@@ -42,13 +42,13 @@ class ProfilePage extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  componentWillMount (){
-    if (this.props.user.userInfo.userid === null){
+  componentWillMount() {
+    if (this.props.user.userInfo.userid === null) {
       this.props.history.push("/");
     }
   }
-  componentDidMount (){
-    if (this.props.user.userInfo.userid === null){
+  componentDidMount() {
+    if (this.props.user.userInfo.userid === null) {
       this.props.history.push("/");
     } else {
       this.setState({
@@ -59,11 +59,11 @@ class ProfilePage extends Component {
     }
   }
 
-  onChange (e) {
+  onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  onSubmit (e) {
+  onSubmit(e) {
     e.preventDefault();
     const { password, file } = this.state;
     const profileData = {
@@ -84,8 +84,8 @@ class ProfilePage extends Component {
     event.preventDefault();
   };
 
-  render () {
-    const {userInfo} = this.props.user;
+  render() {
+    const { userInfo } = this.props.user;
     return (
       <div
         style={{
@@ -142,7 +142,6 @@ class ProfilePage extends Component {
               }}
             />
           </div>
-          
 
           <TextField
             name="email"

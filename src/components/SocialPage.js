@@ -52,7 +52,7 @@ const styles = (theme) => ({
 });
 
 class SocialPage extends Component {
-  componentWillMount (){
+  componentWillMount(){
     //TODO: need to get this userid, email from backend first
     const {userInfo} = this.props.user;
     this.props.getPicsSocialAction(userInfo);
@@ -60,7 +60,7 @@ class SocialPage extends Component {
   }
 
 
-  render () {
+  render() {
     const {userInfo} = this.props.user;
     const {photoData} = this.props.photos;
     const classes = this.props.classes;

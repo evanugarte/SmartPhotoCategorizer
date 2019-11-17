@@ -135,7 +135,6 @@ const getPhotoSocial = (request, response) => {
           if (items[i].file === prevFile) {
             continue;
           }
-        
           // Get picture data from S3 to send in response.
           var getParams = {
             Bucket: BUCKET_NAME,

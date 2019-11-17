@@ -2,7 +2,6 @@ import axios from "axios";
 import { GET_PICS_SOCIAL } from "./types";
 
 export const getPicsSocialAction = (query, history) => dispatch => {
-
   axios
     .get(" http://localhost:4000/users/getPhotoSocial", {params: query})
     .then(res => {

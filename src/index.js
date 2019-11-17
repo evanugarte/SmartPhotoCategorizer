@@ -7,11 +7,11 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 import store from "./store";
-function App (props) {
+function App(props) {
 
   const [authenticated, setAuthenticated] = useState(true);
 
-  function handleLogout () {
+  function handleLogout() {
     setAuthenticated(false);
     props.history.push("/login");
   }

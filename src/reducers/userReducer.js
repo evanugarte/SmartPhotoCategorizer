@@ -10,13 +10,13 @@ const initialState = {
     password: null, userid: "asd123"}
 };
 
-function arrayBufferToBase64 (buffer) {
+function arrayBufferToBase64(buffer) {
   var binary = "";
   var bytes = [].slice.call(new Uint8Array(buffer));
   bytes.forEach(b => (binary += String.fromCharCode(b)));
   return window.btoa(binary);
 }
-export default function (state = initialState, action) {
+export default function(state = initialState, action) {
   switch (action.type) {
   case GET_PROFILE:
     if (action.payload.avatar !== null) {
