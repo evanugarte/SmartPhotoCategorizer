@@ -23,7 +23,8 @@ export const updateProfileFileAction = (file, history) => dispatch => {
 
 export const getProfileFileAction = (query, history) => dispatch => {
   axios
-    .get("http://localhost:4000/users/getprofile", {params:query})
+    .get("http://localhost:4000/users/getprofile", {params:
+    {userid: query.userid}})
     .then(res => {
       dispatch({
         type: GET_PROFILE,
