@@ -43,6 +43,8 @@ class ProfilePage extends Component {
     }
   }
   componentDidMount() {
+    console.log(this.props.getProfileFileAction());
+    
     if (this.props.user.userInfo.userid === null) {
       this.props.history.push("/");
     } else {
