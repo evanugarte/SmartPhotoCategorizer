@@ -425,7 +425,7 @@ const deletePhotoById=(request, response)=>{
     if (userid){
       try {
         var queryParams={
-          TableName: "Photo",
+          TableName: "Photos",
           Key:{
             "userid": userid,
             "file": file
