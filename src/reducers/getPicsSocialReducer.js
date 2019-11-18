@@ -1,7 +1,7 @@
 import { GET_PICS_SOCIAL } from "../actions/types";
 
 const initialState = {
-  photoData: null
+  photoData: []
 };
 function arrayBufferToBase64(buffer) {
   var binary = "";

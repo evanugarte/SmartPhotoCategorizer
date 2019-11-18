@@ -24,7 +24,7 @@ const uploadFile = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "File does not exist";
-    const { email, title, desc } = request.body;
+    const { userid, title, desc } = request.body;
     if (request.file) {
       // Read content from the file
       // const fileContent = fs.readFileSync(fileName);
@@ -67,11 +67,11 @@ const uploadFile = (request, response) => {
             var uploadDate = (d.getMonth() + 1) + "/" +
               d.getDate() + "/" + d.getFullYear();
             var fileParams = {
-              TableName: "Files",
+              TableName: "Photos",
               Item: {
                 "file": newFileName,
                 "tag": label.Name,
-                "email": email,
+                "userid": userid,
                 "title": title,
                 "desc": desc,
                 "likes": 0,
@@ -106,21 +106,20 @@ const getPhotoSocial = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "User does not exist";
-    const reqEmail = request.query.email;
+    const userid = request.query.userid;
     // For now this will be in the headers. Modify later maybe.
-    if (reqEmail) {
+    if (userid) {
       try {
         // Query for information based on input email.
         // Use email index to search.
         var queryParams = {
-          TableName: "Files",
-          IndexName: "email-file-index",
-          KeyConditionExpression: "#email = :email",
+          TableName: "Photos",
+          KeyConditionExpression: "#userid = :userid",
           ExpressionAttributeNames: {
-            "#email": "email"
+            "#userid": "userid"
           },
           ExpressionAttributeValues: {
-            ":email": reqEmail
+            ":userid": userid
           }
         };
         const queryData = await dynamodb.query(queryParams).promise();
@@ -269,7 +268,7 @@ const getprofile = (request, response) => {
         const queryData = await dynamodb.get(queryParams).promise();
         const profileData = queryData.Item;
         var responseObject = null;
-        if (profileData.avatar !== "N/A") {
+        if ("avatar" in profileData) {
           var getParams = {
             Bucket: BUCKET_NAME,
             Key: profileData.avatar
@@ -284,6 +283,7 @@ const getprofile = (request, response) => {
             };
           } catch (e) {
             console.error("can not find the photo", e);
+            statusCode = 304;
             response.status(statusCode).send(e);
           }
         } else {

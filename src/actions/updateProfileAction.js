@@ -12,10 +12,6 @@ export const updateProfileFileAction = (file, history) => dispatch => {
   axios
     .post("http://localhost:4000/users/updateprofile", formData)
     .then(res => {
-      dispatch({
-        type: UPDATE_PROFILE,
-        payload: res.data
-      });
       history.push("/");
     })
     .catch(err => console.error(err));

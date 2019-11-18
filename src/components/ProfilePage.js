@@ -71,8 +71,9 @@ class ProfilePage extends Component {
     const profileData = {
       password: password,
       file: file[0],
-      email: this.props.user.userInfo.email,
-      userid: "asd123" //TODO: need to get this userid from backend first
+      email: this.state.email,
+      userid: this.props.user.userInfo.userid 
+      //TODO: need to get this userid from backend first
     };
     this.setState({ isSubmit: true });
     this.props.updateProfileFileAction(profileData, this.props.history);
