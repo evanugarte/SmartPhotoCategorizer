@@ -53,12 +53,9 @@ jobs:
           key: source-{{ .Branch }}-{{ .Revision }}
       - restore_cache:
           key: dependency-cache-{{ checksum "package.json" }}
-      # - run:
-      #     name: "get config base64 encoding"
-      #     command: echo $config_data > .temp
-      # - run:
-      #     name: "decode base64 stuff"
-      #     command: base64 --decode .temp > src/backend/config.js
+      - run:
+          name: "get config base64 encoding"
+          command: echo $config_data | base64 -di > src/config/config.js
       - run: 
           name: "Build app"
           command: npm run build
@@ -90,10 +87,10 @@ jobs:
           name: "Deploy to S3"
           command: |
             if [ "${CIRCLE_BRANCH}" == "master" ]; then
-              aws s3 sync dist/ s3://${PRODUCTION_BUCKET} --delete
-              aws cloudfront create-invalidation --distribution-id "${PRODUCTION_DISTRIBUTION_ID}" --paths /index.html
-            elif [ "${CIRCLE_BRANCH}" == "develop" ]; then
-              aws s3 sync dist/ s3://${STAGING_BUCKET} --delete
+              aws s3 sync build/ s3://${PRODUCTION_BUCKET} --delete
+              cd build && aws cloudfront create-invalidation --distribution-id "${PRODUCTION_DISTRIBUTION_ID}" --paths /index.html
+            elif [ "${CIRCLE_BRANCH}" == "staging" ]; then
+              aws s3 sync build/ s3://${STAGING_BUCKET} --delete
             fi
 
 workflows:

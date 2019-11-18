@@ -1,7 +1,8 @@
 import React from "react";
 import { Route, Switch, Redirect } from "react-router-dom";
 import { PrivateRoute } from "./PrivateRoute";
-import LoginPage from "./components/LoginPage";
+import LoginPage from "./components/Login";
+import SignUpPage from "./components/SignUp";
 import CategoriesPage from "./components/CategoriesPage";
 import PhotoList from "./components/PhotoList";
 import SocialPage from "./components/SocialPage";
@@ -18,6 +19,7 @@ function Routing({ appProps }) {
   ];
   const signedOutRoutes = [
     { path: "/login", component: LoginPage },
+    { path: "/signup", component: SignUpPage }
   ];
 
   return (
