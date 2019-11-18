@@ -416,11 +416,133 @@ const getTags = (request, response) => {
   });
 };
 
+//delete photo in s3 bucket and dynomoDB by userid 
+const deletePhotoById=(request, response)=>{
+  (async ()=>{
+    var statusCode = 400;
+    var message = "delete photo error from begin";
+    const {file, userid} = request.body;
+    if (userid){
+      try {
+        var queryParams={
+          TableName: "Photo",
+          Key:{
+            "userid": userid,
+            "file": file
+          },
+       
+        };
+        //delete record if file and email matches the delete request
+        dynamodb.delete(queryParams, function(err, data){
+          if (err){
+            console.error("Unable to delete item from dynamodb. Error JSON:", 
+              JSON.stringify(err, null, 2));
+            response.status(statusCode).send(message);
+          }
+        });
+      }
+      catch (e){
+        console.error("can't find corresponding user id in dynamodb");
+        response.status(statusCode).send(message);
+      };
+  
+      var deleteParams={
+        Bucket: BUCKET_NAME,
+        Key: file
+      };
+     
+      s3.deleteObject(deleteParams, function(err, data){
+        if (data){
+          statusCode = 200;
+          message = "File deleted in S3 bucket";
+          response.status(statusCode).send(message);
+        }
+        else {
+          message="Can't delete photo is S3 bucket"+err;
+          response.status(statusCode).send(message);
+        }
+      });
+
+    }
+    
+    else {
+      response.status(statusCode).send("can't find user id");
+    };
+  })().catch(e=>{
+    console.error("something went wrong,check server and try again", e);
+    response.status(statusCode).send(message);
+  });
+};
+
+//delete photo by email in dynamoDB and s3 
+const deletePhotobyEmail=(request, response)=>{
+  (async ()=>{
+    var statusCode = 400;
+    var message = "delete photo error from begin"; 
+    const {file, email, tag} = request.body;
+ 
+    if (file){
+      try {
+        //parameters for conditional delete in dynamoDB
+        var queryParams={
+          TableName: "Files",
+          Key:{
+            "file": file,
+            "tag": tag
+          },
+          ConditionExpression: "email = :val ",
+          ExpressionAttributeValues:{
+            ":val": email
+          }
+        };
+        //conditional delete record in dynamoDB 
+        dynamodb.delete(queryParams, function(err, data){
+          if (err){
+            console.error("Unable to delete item from dynamodb. Error JSON:",
+              JSON.stringify(err, null, 2));
+            response.status(statusCode).send(message);
+          }
+        });
+      }
+      catch (e){
+        console.error("can't find corresponding email in dynamodb");
+        response.status(statusCode).send(message);
+      };
+    
+      var deleteParams={
+        Bucket: BUCKET_NAME,
+        Key: file
+      };
+   
+      s3.deleteObject(deleteParams, function(err, data){
+        if (data){
+          statusCode = 200;
+          message = "File deleted in S3 bucket";
+          response.status(statusCode).send(message);
+        }
+        else {
+          message="Can't delete photo is S3 bucket"+err;
+          response.status(statusCode).send(message);
+        }
+      });
+
+    }
+    
+    else {
+      response.status(statusCode).send("can't find user id");
+    };
+  })().catch(e=>{
+    console.error("something went wrong,check server and try again", e);
+    response.status(statusCode).send(message);
+  });
+};
 module.exports = {
   uploadFile,
   updateProfile,
   getprofile,
   getPhotoSocial,
   getPhotoByTag,
-  getTags
+  getTags,
+  deletePhotoById,
+  deletePhotobyEmail
 };

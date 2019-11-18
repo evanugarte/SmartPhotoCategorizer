@@ -15,4 +15,6 @@ router.get("/getprofile", api.getprofile);
 router.get("/getPhotoSocial", api.getPhotoSocial);
 router.get("/getPhotoByTag", api.getPhotoByTag);
 router.get("/getTags", api.getTags);
+router.delete("/deleteById", api.deletePhotoById);
+router.delete("/deleteByEmail", api.deletePhotobyEmail);
 module.exports = router;
