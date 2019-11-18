@@ -49,8 +49,8 @@ const uploadFile = (request, response) => {
             Image: {
               Bytes: fileContent
             },
-            MaxLabels: 10,
-            MinConfidence: 70
+            MaxLabels: 5,
+            MinConfidence: 75
           };
 
           // Detect labels with Rekognition
@@ -320,7 +320,7 @@ const getPhotoByTag = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "Empty";
-    const reqTag = request.query.tag;
+    const reqTag = request.query.tag.replace(/^\w/, c => c.toUpperCase());
     if (reqTag) {
       try {
         var queryParams = {
