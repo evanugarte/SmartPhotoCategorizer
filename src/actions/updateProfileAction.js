@@ -1,5 +1,5 @@
 import axios from "axios";
-import { UPDATE_PROFILE, GET_PROFILE } from "./types";
+import { GET_PROFILE } from "./types";
 
 export const updateProfileFileAction = (file, history) => dispatch => {
   var formData = new FormData();
