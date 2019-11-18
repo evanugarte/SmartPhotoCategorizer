@@ -114,6 +114,7 @@ const getPhotoSocial = (request, response) => {
         // Use email index to search.
         var queryParams = {
           TableName: "Photos",
+          IndexName: "userid-index",
           KeyConditionExpression: "#userid = :userid",
           ExpressionAttributeNames: {
             "#userid": "userid"
