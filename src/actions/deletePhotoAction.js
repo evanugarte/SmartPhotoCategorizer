@@ -6,7 +6,7 @@ export const deletePhotoAction = (queryDelete, history) => dispatch => {
   axios
     .delete("http://localhost:4000/users/deleteById", { data: queryDelete })
     .then(res => {
-      getPicsSocialAction();
+      dispatch(getPicsSocialAction());
     })
     .catch(err =>
       console.error(err));

@@ -475,7 +475,7 @@ const deletePhotoById = (request, response) => {
         };
         const deleteQueryData = await dynamodb.query(queryParams).promise();
         const items = deleteQueryData.Items;
-        
+
         // loop through the queried items and delete them one by one
         for (let i = 0; i < items.length; i++) {
           var deleteEntryParams = {
