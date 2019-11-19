@@ -53,9 +53,8 @@ const styles = (theme) => ({
 class SocialPage extends Component {
   componentWillMount() {
     //TODO: need to get this userid, email from backend first
-    const { userInfo } = this.props.user;
-    this.props.getPicsSocialAction(userInfo);
-    this.props.getProfileFileAction(userInfo);
+    this.props.getPicsSocialAction();
+    this.props.getProfileFileAction();
   }
 
 
@@ -65,7 +64,7 @@ class SocialPage extends Component {
     const classes = this.props.classes;
 
     const RenderSocialPost = () => {
-      if (photoData != null) {
+      if (photoData.length > 0) {
         return (
           <Grid container spacing={3} direction="column"
             justify="center"
@@ -115,7 +114,9 @@ class SocialPage extends Component {
           </Grid>
         );
       } else {
-        return <div></div>;
+        return <div style={{marginTop: 100}}>
+        You dont have any photos. 
+        Please click upload photo above to upload your photos</div>;
       }
     };
 

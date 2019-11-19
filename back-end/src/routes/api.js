@@ -24,7 +24,7 @@ const uploadFile = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "File does not exist";
-    const { email, title, desc } = request.body;
+    const { userid, title, desc } = request.body;
     if (request.file) {
       // Read content from the file
       // const fileContent = fs.readFileSync(fileName);
@@ -49,8 +49,8 @@ const uploadFile = (request, response) => {
             Image: {
               Bytes: fileContent
             },
-            MaxLabels: 10,
-            MinConfidence: 70
+            MaxLabels: 5,
+            MinConfidence: 75
           };
 
           // Detect labels with Rekognition
@@ -67,11 +67,11 @@ const uploadFile = (request, response) => {
             var uploadDate = (d.getMonth() + 1) + "/" +
               d.getDate() + "/" + d.getFullYear();
             var fileParams = {
-              TableName: "Files",
+              TableName: "Photos",
               Item: {
                 "file": newFileName,
                 "tag": label.Name,
-                "email": email,
+                "userid": userid,
                 "title": title,
                 "desc": desc,
                 "likes": 0,
@@ -106,21 +106,21 @@ const getPhotoSocial = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "User does not exist";
-    const reqEmail = request.query.email;
+    const userid = request.query.userid;
     // For now this will be in the headers. Modify later maybe.
-    if (reqEmail) {
+    if (userid) {
       try {
         // Query for information based on input email.
         // Use email index to search.
         var queryParams = {
-          TableName: "Files",
-          IndexName: "email-file-index",
-          KeyConditionExpression: "#email = :email",
+          TableName: "Photos",
+          IndexName: "userid-index",
+          KeyConditionExpression: "#userid = :userid",
           ExpressionAttributeNames: {
-            "#email": "email"
+            "#userid": "userid"
           },
           ExpressionAttributeValues: {
-            ":email": reqEmail
+            ":userid": userid
           }
         };
         const queryData = await dynamodb.query(queryParams).promise();
@@ -269,7 +269,7 @@ const getprofile = (request, response) => {
         const queryData = await dynamodb.get(queryParams).promise();
         const profileData = queryData.Item;
         var responseObject = null;
-        if (profileData.avatar !== "N/A") {
+        if ("avatar" in profileData) {
           var getParams = {
             Bucket: BUCKET_NAME,
             Key: profileData.avatar
@@ -284,6 +284,7 @@ const getprofile = (request, response) => {
             };
           } catch (e) {
             console.error("can not find the photo", e);
+            statusCode = 304;
             response.status(statusCode).send(e);
           }
         } else {
@@ -310,6 +311,37 @@ const getprofile = (request, response) => {
   });
 };
 
+const signup =  (request, response) => {
+  (async () => {
+    var statusCode = 400;
+    var message = "sever error";
+    const userid = request.body.userid;
+    const email = request.body.email;
+    if (userid && email){
+      var usersParams = {
+        TableName: "Users",
+        Item: {
+          "userid": userid,
+          "email": email
+        }
+      };
+      try {
+        const fileData = await dynamodb.put(usersParams).promise();
+        statusCode = 200;
+        response.status(statusCode).send("signup successfully");
+      } catch (e) {
+        console.error(e);
+        response.status(statusCode).send(message);
+      }
+    } else {
+      response.status(statusCode).send(message);
+    }
+  })().catch(e => {
+    console.error(e);
+    response.status(statusCode).send(e);
+  });
+};
+
 /**
  * Retrieve all photos from a specific tag.
  * @param {tag: String} request 
@@ -319,12 +351,12 @@ const getPhotoByTag = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "Empty";
-    const reqTag = request.query.tag;
+    const reqTag = request.query.tag.replace(/^\w/, c => c.toUpperCase());
     if (reqTag) {
       try {
         var queryParams = {
-          TableName: "Files",
-          IndexName: "tag-file-index",
+          TableName: "Photos",
+          IndexName: "tag-index",
           KeyConditionExpression: "#tag = :tag",
           ExpressionAttributeNames: {
             "#tag": "tag"
@@ -375,41 +407,44 @@ const getTags = (request, response) => {
     var message = "Nothing to see here folks";
     // I assume this line is supposed to check if the user is authenticated.
     // Replace once authentication is done.
-    try {
-      var scanParams = {
-        TableName: "Files",
-        ProjectionExpression: "#tag, #file",
-        ExpressionAttributeNames: {
-          "#tag": "tag",
-          "#file": "file"
-        }
-      };
-
-      const scanData = await dynamodb.scan(scanParams).promise();
-      const items = scanData.Items;
-
-      prevTag = "";
-      var responseData = [];
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].tag === prevTag) {
-          continue;
-        }
-        var getParams = {
-          Bucket: BUCKET_NAME,
-          Key: items[i].file
+    const userid = request.query.userid;
+    if (userid) {
+      try {
+        var scanParams = {
+          TableName: "Photos",
+          ProjectionExpression: "#tag, #file",
+          ExpressionAttributeNames: {
+            "#tag": "tag",
+            "#file": "file"
+          }
         };
-        var photoData = await s3.getObject(getParams).promise();
-        var responseObject = {
-          tag: items[i].tag,
-          photo: photoData.Body.buffer
-        };
-        responseData.push(responseObject);
+
+        const scanData = await dynamodb.scan(scanParams).promise();
+        const items = scanData.Items;
+
+        prevTag = "";
+        var responseData = [];
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].tag === prevTag) {
+            continue;
+          }
+          var getParams = {
+            Bucket: BUCKET_NAME,
+            Key: items[i].file
+          };
+          var photoData = await s3.getObject(getParams).promise();
+          var responseObject = {
+            tag: items[i].tag,
+            photo: photoData.Body.buffer
+          };
+          responseData.push(responseObject);
+        }
+        statusCode = 200;
+        response.status(statusCode).send(responseData);
       }
-      statusCode = 200;
-      response.status(statusCode).send(responseData);
-    }
-    catch (e) {
-      response.status(statusCode).send(message);
+      catch (e) {
+        response.status(statusCode).send(message);
+      }
     }
   })().catch(e => {
     console.error("User is not authenticated", e);
@@ -544,5 +579,6 @@ module.exports = {
   getPhotoByTag,
   getTags,
   deletePhotoById,
-  deletePhotobyEmail
+  deletePhotobyEmail,
+  signup
 };

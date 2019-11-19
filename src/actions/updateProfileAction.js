@@ -1,5 +1,6 @@
 import axios from "axios";
-import { UPDATE_PROFILE, GET_PROFILE } from "./types";
+import { GET_PROFILE } from "./types";
+import { Auth } from "aws-amplify";
 
 export const updateProfileFileAction = (file, history) => dispatch => {
   var formData = new FormData();
@@ -12,24 +13,30 @@ export const updateProfileFileAction = (file, history) => dispatch => {
   axios
     .post("http://localhost:4000/users/updateprofile", formData)
     .then(res => {
-      dispatch({
-        type: UPDATE_PROFILE,
-        payload: res.data
-      });
       history.push("/");
     })
     .catch(err => console.error(err));
 };
 
-export const getProfileFileAction = (query, history) => dispatch => {
-  axios
-    .get("http://localhost:4000/users/getprofile", {params:
-    {userid: query.userid}})
-    .then(res => {
-      dispatch({
-        type: GET_PROFILE,
-        payload: res.data
-      });
-    })
-    .catch(err => console.error(err));
+export const getProfileFileAction = (history) => dispatch => {
+  var userData;
+  (async () => {
+    userData = await Auth.currentSession();
+    if (userData != null){
+      userData = {
+        userid: userData.idToken.payload["cognito:username"],
+        email: userData.idToken.payload.email
+      };
+    }
+    await axios
+      .get("http://localhost:4000/users/getprofile", {params:
+    {userid: userData.userid}})
+      .then(res => {
+        dispatch({
+          type: GET_PROFILE,
+          payload: res.data
+        });
+      })
+      .catch(err => console.error(err));
+  })();
 };
