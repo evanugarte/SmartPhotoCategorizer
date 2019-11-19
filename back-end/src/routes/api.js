@@ -49,8 +49,8 @@ const uploadFile = (request, response) => {
             Image: {
               Bytes: fileContent
             },
-            MaxLabels: 10,
-            MinConfidence: 70
+            MaxLabels: 5,
+            MinConfidence: 75
           };
 
           // Detect labels with Rekognition
@@ -351,12 +351,12 @@ const getPhotoByTag = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "Empty";
-    const reqTag = request.query.tag;
+    const reqTag = request.query.tag.replace(/^\w/, c => c.toUpperCase());
     if (reqTag) {
       try {
         var queryParams = {
-          TableName: "Files",
-          IndexName: "tag-file-index",
+          TableName: "Photos",
+          IndexName: "tag-index",
           KeyConditionExpression: "#tag = :tag",
           ExpressionAttributeNames: {
             "#tag": "tag"
@@ -407,41 +407,44 @@ const getTags = (request, response) => {
     var message = "Nothing to see here folks";
     // I assume this line is supposed to check if the user is authenticated.
     // Replace once authentication is done.
-    try {
-      var scanParams = {
-        TableName: "Files",
-        ProjectionExpression: "#tag, #file",
-        ExpressionAttributeNames: {
-          "#tag": "tag",
-          "#file": "file"
-        }
-      };
-
-      const scanData = await dynamodb.scan(scanParams).promise();
-      const items = scanData.Items;
-
-      prevTag = "";
-      var responseData = [];
-      for (let i = 0; i < items.length; i++) {
-        if (items[i].tag === prevTag) {
-          continue;
-        }
-        var getParams = {
-          Bucket: BUCKET_NAME,
-          Key: items[i].file
+    const userid = request.query.userid;
+    if (userid) {
+      try {
+        var scanParams = {
+          TableName: "Photos",
+          ProjectionExpression: "#tag, #file",
+          ExpressionAttributeNames: {
+            "#tag": "tag",
+            "#file": "file"
+          }
         };
-        var photoData = await s3.getObject(getParams).promise();
-        var responseObject = {
-          tag: items[i].tag,
-          photo: photoData.Body.buffer
-        };
-        responseData.push(responseObject);
+
+        const scanData = await dynamodb.scan(scanParams).promise();
+        const items = scanData.Items;
+
+        prevTag = "";
+        var responseData = [];
+        for (let i = 0; i < items.length; i++) {
+          if (items[i].tag === prevTag) {
+            continue;
+          }
+          var getParams = {
+            Bucket: BUCKET_NAME,
+            Key: items[i].file
+          };
+          var photoData = await s3.getObject(getParams).promise();
+          var responseObject = {
+            tag: items[i].tag,
+            photo: photoData.Body.buffer
+          };
+          responseData.push(responseObject);
+        }
+        statusCode = 200;
+        response.status(statusCode).send(responseData);
       }
-      statusCode = 200;
-      response.status(statusCode).send(responseData);
-    }
-    catch (e) {
-      response.status(statusCode).send(message);
+      catch (e) {
+        response.status(statusCode).send(message);
+      }
     }
   })().catch(e => {
     console.error("User is not authenticated", e);
