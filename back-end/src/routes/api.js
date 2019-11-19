@@ -126,10 +126,10 @@ const getPhotoSocial = (request, response) => {
         const queryData = await dynamodb.query(queryParams).promise();
         const items = queryData.Items;
         var responseData = [];
+        var arrayFileName = [];
         // Loop through photos to send all object data
-        prevFile = "";
         for (let i = 0; i < items.length; i++) {
-          if (items[i].file === prevFile) {
+          if (arrayFileName.includes(items[i].file)) {
             continue;
           }
           // Get picture data from S3 to send in response.
@@ -140,15 +140,15 @@ const getPhotoSocial = (request, response) => {
           var photoData = await s3.getObject(getParams).promise();
 
           responseObject = {
+            file: items[i].file,
             photo: photoData.Body,
             title: items[i].title,
             desc: items[i].desc,
             likes: items[i].likes,
             uploadDate: items[i].uploadDate
           };
-
+          arrayFileName.push(items[i].file);
           responseData.push(responseObject);
-          prevFile = items[i].file;
         }
         statusCode = 200;
         response.status(statusCode).send(responseData);
@@ -279,7 +279,6 @@ const getprofile = (request, response) => {
             responseObject = {
               avatar: photoData.Body,
               email: profileData.email,
-              password: profileData.password,
               userid: profileData.userid
             };
           } catch (e) {
@@ -291,7 +290,6 @@ const getprofile = (request, response) => {
           responseObject = {
             avatar: null,
             email: profileData.email,
-            password: profileData.password,
             userid: profileData.userid
           };
         }
@@ -452,51 +450,57 @@ const getTags = (request, response) => {
 };
 
 //delete photo in s3 bucket and dynomoDB by userid 
-const deletePhotoById=(request, response)=>{
-  (async ()=>{
+const deletePhotoById = (request, response) => {
+  (async () => {
     var statusCode = 400;
     var message = "delete photo error from begin";
     const {file, userid} = request.body;
     if (userid){
+      var queryParams={
+        TableName: "Photos",
+        Key:{
+          "file": file,
+          "tag": "Text"
+        }
+        // ConditionExpression: "#userid = :userid",
+        // ExpressionAttributeNames: {
+        //   "#userid": "userid"
+        // },
+        // ExpressionAttributeValues: {
+        //   ":userid": userid
+        // }
+      };
+      var deleteParams={
+        Bucket: BUCKET_NAME,
+        Key: file
+      };
       try {
-        var queryParams={
-          TableName: "Photos",
-          Key:{
-            "userid": userid,
-            "file": file
-          },
-       
-        };
+        
         //delete record if file and email matches the delete request
-        dynamodb.delete(queryParams, function(err, data){
-          if (err){
-            console.error("Unable to delete item from dynamodb. Error JSON:", 
-              JSON.stringify(err, null, 2));
-            response.status(statusCode).send(message);
-          }
-        });
+        dynamodb.delete(queryParams).promise()
+          .then(
+            s3.deleteObject(deleteParams, function(err, data){
+              if (data){
+                statusCode = 200;
+                message = "File deleted in S3 bucket";
+                response.status(statusCode).send(message);
+              }
+              else {
+                message="Can't delete photo is S3 bucket"+err;
+                response.status(statusCode).send(message);
+              }
+            })
+          ).catch(e => {
+            console.error("can't delete photo in dynamodb");
+            response.status(statusCode).send(e);
+          });
       }
       catch (e){
-        console.error("can't find corresponding user id in dynamodb");
-        response.status(statusCode).send(message);
+        console.error("can't delete photo in dynamodb");
+        response.status(statusCode).send(e);
       };
   
-      var deleteParams={
-        Bucket: BUCKET_NAME,
-        Key: file
-      };
-     
-      s3.deleteObject(deleteParams, function(err, data){
-        if (data){
-          statusCode = 200;
-          message = "File deleted in S3 bucket";
-          response.status(statusCode).send(message);
-        }
-        else {
-          message="Can't delete photo is S3 bucket"+err;
-          response.status(statusCode).send(message);
-        }
-      });
+      
 
     }
     
@@ -509,68 +513,6 @@ const deletePhotoById=(request, response)=>{
   });
 };
 
-//delete photo by email in dynamoDB and s3 
-const deletePhotobyEmail=(request, response)=>{
-  (async ()=>{
-    var statusCode = 400;
-    var message = "delete photo error from begin"; 
-    const {file, email, tag} = request.body;
- 
-    if (file){
-      try {
-        //parameters for conditional delete in dynamoDB
-        var queryParams={
-          TableName: "Files",
-          Key:{
-            "file": file,
-            "tag": tag
-          },
-          ConditionExpression: "email = :val ",
-          ExpressionAttributeValues:{
-            ":val": email
-          }
-        };
-        //conditional delete record in dynamoDB 
-        dynamodb.delete(queryParams, function(err, data){
-          if (err){
-            console.error("Unable to delete item from dynamodb. Error JSON:",
-              JSON.stringify(err, null, 2));
-            response.status(statusCode).send(message);
-          }
-        });
-      }
-      catch (e){
-        console.error("can't find corresponding email in dynamodb");
-        response.status(statusCode).send(message);
-      };
-    
-      var deleteParams={
-        Bucket: BUCKET_NAME,
-        Key: file
-      };
-   
-      s3.deleteObject(deleteParams, function(err, data){
-        if (data){
-          statusCode = 200;
-          message = "File deleted in S3 bucket";
-          response.status(statusCode).send(message);
-        }
-        else {
-          message="Can't delete photo is S3 bucket"+err;
-          response.status(statusCode).send(message);
-        }
-      });
-
-    }
-    
-    else {
-      response.status(statusCode).send("can't find user id");
-    };
-  })().catch(e=>{
-    console.error("something went wrong,check server and try again", e);
-    response.status(statusCode).send(message);
-  });
-};
 module.exports = {
   uploadFile,
   updateProfile,
@@ -579,6 +521,5 @@ module.exports = {
   getPhotoByTag,
   getTags,
   deletePhotoById,
-  deletePhotobyEmail,
   signup
 };

@@ -11,10 +11,12 @@ import Typography from "@material-ui/core/Typography";
 import { red } from "@material-ui/core/colors";
 import FavoriteIcon from "@material-ui/icons/Favorite";
 import ShareIcon from "@material-ui/icons/Share";
+import DeleteIcon from "@material-ui/icons/Delete";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import { withStyles } from "@material-ui/core/styles";
 import { getProfileFileAction } from "../actions/updateProfileAction";
 import { getPicsSocialAction } from "../actions/getPicsSocialAction";
+import { deletePhotoAction } from "../actions/deletePhotoAction";
 import { connect } from "react-redux";
 
 const styles = (theme) => ({
@@ -106,6 +108,13 @@ class SocialPage extends Component {
                       <IconButton aria-label="share">
                         <ShareIcon />
                       </IconButton>
+                      <IconButton 
+                        onClick={() => 
+                          this.props.deletePhotoAction({
+                            file: photo.file, userid: userInfo.userid})}
+                        aria-label="delete">
+                        <DeleteIcon/>
+                      </IconButton>
                     </CardActions>
                   </Card>
                 </Grid>
@@ -134,5 +143,5 @@ const mapStateToProps = state => ({
 
 export default connect(
   mapStateToProps,
-  { getProfileFileAction, getPicsSocialAction }
+  { getProfileFileAction, getPicsSocialAction, deletePhotoAction }
 )(withStyles(styles, { withTheme: true })(SocialPage));
