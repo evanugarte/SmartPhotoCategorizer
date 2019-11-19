@@ -2,7 +2,7 @@ import { UPDATE_PROFILE, GET_PROFILE } from "../actions/types";
 //TODO: remove dummy email below
 const initialState = {
   userInfo: {avatar: null, email: null, 
-    password: null, userid: "minh123"}
+    password: null, userid: null}
 };
 
 function arrayBufferToBase64(buffer) {
