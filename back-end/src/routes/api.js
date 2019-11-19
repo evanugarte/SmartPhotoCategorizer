@@ -456,54 +456,47 @@ const deletePhotoById = (request, response) => {
     var message = "delete photo error from begin";
     const {file, userid} = request.body;
     if (userid){
-      var queryParams={
-        TableName: "Photos",
-        Key:{
-          "file": file,
-          "tag": "Text"
-        }
-        // ConditionExpression: "#userid = :userid",
-        // ExpressionAttributeNames: {
-        //   "#userid": "userid"
-        // },
-        // ExpressionAttributeValues: {
-        //   ":userid": userid
-        // }
-      };
+      // Parameters to delete object from s3 bucket
       var deleteParams={
         Bucket: BUCKET_NAME,
         Key: file
       };
       try {
+        // query for dynamodb data we want to delete
+        var queryParams = {
+          TableName: "Photos",
+          KeyConditionExpression: "#file = :file",
+          ExpressionAttributeNames: {
+            "#file": "file"
+          },
+          ExpressionAttributeValues: {
+            ":file": file
+          }
+        };
+        const deleteQueryData = await dynamodb.query(queryParams).promise();
+        const items = deleteQueryData.Items;
         
-        //delete record if file and email matches the delete request
-        dynamodb.delete(queryParams).promise()
-          .then(
-            s3.deleteObject(deleteParams, function(err, data){
-              if (data){
-                statusCode = 200;
-                message = "File deleted in S3 bucket";
-                response.status(statusCode).send(message);
-              }
-              else {
-                message="Can't delete photo is S3 bucket"+err;
-                response.status(statusCode).send(message);
-              }
-            })
-          ).catch(e => {
-            console.error("can't delete photo in dynamodb");
-            response.status(statusCode).send(e);
-          });
+        // loop through the queried items and delete them one by one
+        for (let i = 0; i < items.length; i++) {
+          var deleteEntryParams = {
+            TableName: "Photos",
+            Key: {
+              file: items[i].file,
+              tag: items[i].tag
+            }
+          };
+          const deleteEnt = await dynamodb.delete(deleteEntryParams).promise();
+        }
+        
+        // delete object from s3
+        const deleteObject = await s3.deleteObject(deleteParams).promise();
+        response.status(200).send("Deleted");
       }
       catch (e){
         console.error("can't delete photo in dynamodb");
         response.status(statusCode).send(e);
       };
-  
-      
-
     }
-    
     else {
       response.status(statusCode).send("can't find user id");
     };
