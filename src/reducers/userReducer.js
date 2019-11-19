@@ -1,17 +1,17 @@
 import { UPDATE_PROFILE, GET_PROFILE } from "../actions/types";
-
-
+//TODO: remove dummy email below
 const initialState = {
-  userInfo: { avatar: null, email: null, password: null, userid: null }
+  userInfo: {avatar: null, email: null, 
+    password: null, userid: null}
 };
 
-function arrayBufferToBase64 (buffer) {
+function arrayBufferToBase64(buffer) {
   var binary = "";
   var bytes = [].slice.call(new Uint8Array(buffer));
   bytes.forEach(b => (binary += String.fromCharCode(b)));
   return window.btoa(binary);
 }
-export default function (state = initialState, action) {
+export default function(state = initialState, action) {
   switch (action.type) {
   case GET_PROFILE:
     if (action.payload.avatar !== null) {

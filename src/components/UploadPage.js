@@ -30,7 +30,7 @@ const styles = theme => ({
 });
 
 class UploadPage extends Component {
-  constructor () {
+  constructor() {
     super();
     this.state = {
       title: "",
@@ -43,18 +43,18 @@ class UploadPage extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  onChange (e) {
+  onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  onSubmit (e) {
+  onSubmit(e) {
     e.preventDefault();
     const { title, description, file } = this.state;
     const uploadData = {
       title: title.length ? title : file[0].filename,
       desc: description,
       file: file[0],
-      email: this.props.user.userInfo.email
+      userid: this.props.user.userInfo.userid
     };
 
 
@@ -62,7 +62,7 @@ class UploadPage extends Component {
     this.props.uploadFileAction(uploadData, this.props.history);
   }
 
-  render () {
+  render() {
     return (
       <div
         style={{

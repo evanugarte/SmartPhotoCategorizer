@@ -9,13 +9,6 @@ import {
   updateProfileFileAction,
   getProfileFileAction
 } from "../actions/updateProfileAction";
-import InputLabel from "@material-ui/core/InputLabel";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import IconButton from "@material-ui/core/IconButton";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import FormControl from "@material-ui/core/FormControl";
 import CardMedia from "@material-ui/core/CardMedia";
 
 const styles = (theme) => ({
@@ -30,7 +23,7 @@ const styles = (theme) => ({
 });
 
 class ProfilePage extends Component {
-  constructor () {
+  constructor() {
     super();
     this.state = {
       email: null,
@@ -44,12 +37,12 @@ class ProfilePage extends Component {
     this.onSubmit = this.onSubmit.bind(this);
   }
 
-  componentWillMount () {
+  componentWillMount() {
     if (this.props.user.userInfo.userid === null) {
       this.props.history.push("/");
     }
   }
-  componentDidMount () {
+  componentDidMount() {
     if (this.props.user.userInfo.userid === null) {
       this.props.history.push("/");
     } else {
@@ -61,18 +54,19 @@ class ProfilePage extends Component {
     }
   }
 
-  onChange (e) {
+  onChange(e) {
     this.setState({ [e.target.name]: e.target.value });
   }
 
-  onSubmit (e) {
+  onSubmit(e) {
     e.preventDefault();
     const { password, file } = this.state;
     const profileData = {
       password: password,
       file: file[0],
-      email: this.props.user.userInfo.email,
-      userid: "asd123" //TODO: need to get this userid from backend first
+      email: this.state.email,
+      userid: this.props.user.userInfo.userid 
+      //TODO: need to get this userid from backend first
     };
     this.setState({ isSubmit: true });
     this.props.updateProfileFileAction(profileData, this.props.history);
@@ -86,7 +80,7 @@ class ProfilePage extends Component {
     event.preventDefault();
   };
 
-  render () {
+  render() {
     const { userInfo } = this.props.user;
     return (
       <div
@@ -145,7 +139,6 @@ class ProfilePage extends Component {
             />
           </div>
 
-
           <TextField
             name="email"
             label="email"
@@ -156,39 +149,11 @@ class ProfilePage extends Component {
             style={{ marginBottom: 10 }}
           />
 
-          <FormControl variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">
-              Password
-            </InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password"
-              name="password"
-              label="password"
-              type={this.state.showPassword ? "text" : "password"}
-              value={this.state.password}
-              onChange={this.onChange}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={this.handleClickShowPassword}
-                    onMouseDown={this.handleMouseDownPassword}
-                  >
-                    {this.state.showPassword ?
-                      <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              labelWidth={70}
-            />
-          </FormControl>
-
           <Button
             type="submit"
             variant="contained"
             color="default"
-            style={{ marginTop: 10, marginBottom: 15 }}
-          >
+            style={{ marginTop: 10, marginBottom: 15 }} >
             Save Changes
           </Button>
         </form>
