@@ -71,7 +71,7 @@ jobs:
   deploy:
     <<: *defaults
     environment:
-      - STAGING_BUCKET: cmpe172-project2-website-staging
+      - STAGING_BUCKET: photoshare.uk
       - PRODUCTION_BUCKET: cmpe172-project2-website-production
       - PRODUCTION_DISTRIBUTION_ID: E3B73MQQ5N6LG8
     steps:
