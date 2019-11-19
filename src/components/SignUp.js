@@ -8,6 +8,7 @@ import {
   Spinner
 } from "reactstrap";
 import { Auth } from "aws-amplify";
+import { signup } from "../actions/signUpAction";
 
 export default function Signup(props) {
   const [email, setEmail] = useState("");
@@ -73,6 +74,15 @@ export default function Signup(props) {
       //   firstName: firstName,
       //   lastName: lastName
       // };
+      const userData = await Auth.currentSession();
+      var signupUser = null;
+      if (userData != null){
+        signupUser = {
+          userid: userData.idToken.payload["cognito:username"],
+          email: userData.idToken.payload.email
+        };
+      }
+      signup(signupUser);
       props.history.push("/");
     } catch (e) {
       alert(e.message);

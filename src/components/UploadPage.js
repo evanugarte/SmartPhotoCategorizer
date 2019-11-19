@@ -54,7 +54,7 @@ class UploadPage extends Component {
       title: title.length ? title : file[0].filename,
       desc: description,
       file: file[0],
-      email: this.props.user.userInfo.email
+      userid: this.props.user.userInfo.userid
     };
 
 
