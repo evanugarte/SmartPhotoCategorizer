@@ -1,5 +1,4 @@
 import axios from "axios";
-import { DELETE } from "./types";
 import { getPicsSocialAction } from "./getPicsSocialAction";
 
 export const deletePhotoAction = (queryDelete, history) => dispatch => {
