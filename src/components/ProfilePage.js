@@ -9,13 +9,6 @@ import {
   updateProfileFileAction,
   getProfileFileAction
 } from "../actions/updateProfileAction";
-import InputLabel from "@material-ui/core/InputLabel";
-import InputAdornment from "@material-ui/core/InputAdornment";
-import Visibility from "@material-ui/icons/Visibility";
-import VisibilityOff from "@material-ui/icons/VisibilityOff";
-import IconButton from "@material-ui/core/IconButton";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import FormControl from "@material-ui/core/FormControl";
 import CardMedia from "@material-ui/core/CardMedia";
 
 const styles = (theme) => ({
@@ -155,33 +148,6 @@ class ProfilePage extends Component {
             variant="outlined"
             style={{ marginBottom: 10 }}
           />
-
-          <FormControl variant="outlined">
-            <InputLabel htmlFor="outlined-adornment-password">
-              Password
-            </InputLabel>
-            <OutlinedInput
-              id="outlined-adornment-password"
-              name="password"
-              label="password"
-              type={this.state.showPassword ? "text" : "password"}
-              value={this.state.password}
-              onChange={this.onChange}
-              endAdornment={
-                <InputAdornment position="end">
-                  <IconButton
-                    aria-label="toggle password visibility"
-                    onClick={this.handleClickShowPassword}
-                    onMouseDown={this.handleMouseDownPassword}
-                  >
-                    {this.state.showPassword ?
-                      <Visibility /> : <VisibilityOff />}
-                  </IconButton>
-                </InputAdornment>
-              }
-              labelWidth={70}
-            />
-          </FormControl>
 
           <Button
             type="submit"

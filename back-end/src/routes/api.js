@@ -114,6 +114,7 @@ const getPhotoSocial = (request, response) => {
         // Use email index to search.
         var queryParams = {
           TableName: "Photos",
+          IndexName: "userid-index",
           KeyConditionExpression: "#userid = :userid",
           ExpressionAttributeNames: {
             "#userid": "userid"
@@ -310,6 +311,37 @@ const getprofile = (request, response) => {
   });
 };
 
+const signup =  (request, response) => {
+  (async () => {
+    var statusCode = 400;
+    var message = "sever error";
+    const userid = request.body.userid;
+    const email = request.body.email;
+    if (userid && email){
+      var usersParams = {
+        TableName: "Users",
+        Item: {
+          "userid": userid,
+          "email": email
+        }
+      };
+      try {
+        const fileData = await dynamodb.put(usersParams).promise();
+        statusCode = 200;
+        response.status(statusCode).send("signup successfully");
+      } catch (e) {
+        console.error(e);
+        response.status(statusCode).send(message);
+      }
+    } else {
+      response.status(statusCode).send(message);
+    }
+  })().catch(e => {
+    console.error(e);
+    response.status(statusCode).send(e);
+  });
+};
+
 /**
  * Retrieve all photos from a specific tag.
  * @param {tag: String} request 
@@ -422,5 +454,6 @@ module.exports = {
   getprofile,
   getPhotoSocial,
   getPhotoByTag,
-  getTags
+  getTags,
+  signup
 };

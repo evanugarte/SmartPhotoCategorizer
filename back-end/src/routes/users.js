@@ -12,6 +12,7 @@ router.get("/", function(req, res, next) {
 router.post("/upload", upload.single("file"), api.uploadFile);
 router.post("/updateprofile", upload.single("file"), api.updateProfile);
 router.get("/getprofile", api.getprofile);
+router.post("/signup", api.signup);
 router.get("/getPhotoSocial", api.getPhotoSocial);
 router.get("/getPhotoByTag", api.getPhotoByTag);
 router.get("/getTags", api.getTags);
