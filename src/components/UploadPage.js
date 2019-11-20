@@ -56,8 +56,6 @@ class UploadPage extends Component {
       file: file[0],
       userid: this.props.user.userInfo.userid
     };
-
-
     this.setState({ isSubmit: true });
     this.props.uploadFileAction(uploadData, this.props.history);
   }
