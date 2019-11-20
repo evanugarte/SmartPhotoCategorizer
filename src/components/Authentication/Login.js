@@ -31,7 +31,7 @@ function Login(props) {
     if (!window.location.search.includes("?signedin=true")) {
       checkUser(dispatch); 
     }
-  });
+  },[]);
 
   // This renders the sign in/sign up form
   if (formState === "email") {
