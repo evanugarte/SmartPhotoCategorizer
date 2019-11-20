@@ -169,7 +169,8 @@ class SocialPage extends Component {
                         />
                       </DialogContent>
                       <DialogActions>
-                        <Button onClick={() => this.handleShare(photo)} color="primary">
+                        <Button onClick={
+                          () => this.handleShare(photo)} color="primary">
                           Share
                         </Button>
                       </DialogActions>
