@@ -14,6 +14,7 @@ import {
   DropdownMenu
 } from "reactstrap";
 import { Link } from "react-router-dom";
+import { connect } from "react-redux";
 
 function Navigation(props) {
   const [isOpen, toggleOpen] = useState(false);
@@ -34,7 +35,7 @@ function Navigation(props) {
           toggle={() => toggleDropdownOpen(!dropdownOpen)}
         >
           <DropdownToggle navbar="true" caret>
-            Account Options
+            {props.user.userInfo.email}
           </DropdownToggle>
           <DropdownMenu dark="true">
             <DropdownItem>
@@ -75,4 +76,8 @@ function Navigation(props) {
   );
 }
 
-export default Navigation;
+const mapStateToProps = state => ({
+  user: state.user
+});
+
+export default connect(mapStateToProps)(Navigation);
