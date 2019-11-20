@@ -112,6 +112,19 @@ const getPhotoSocial = (request, response) => {
       try {
         // Query for information based on input email.
         // Use email index to search.
+        var sharedPhotosParams = {
+          TableName: "SharedPhotos",
+          KeyConditionExpression: "#userid = :userid",
+          ExpressionAttributeNames: {
+            "#userid": "userid"
+          },
+          ExpressionAttributeValues: {
+            ":userid": userid
+          }
+        };
+        const sharedPhotosQueryData = await dynamodb
+          .query(sharedPhotosParams).promise();
+        const sharedPhotos = sharedPhotosQueryData.Items;
         var queryParams = {
           TableName: "Photos",
           IndexName: "userid-index",
@@ -124,7 +137,8 @@ const getPhotoSocial = (request, response) => {
           }
         };
         const queryData = await dynamodb.query(queryParams).promise();
-        const items = queryData.Items;
+        var items = queryData.Items;
+        items = items.concat(sharedPhotos);
         var responseData = [];
         var arrayFileName = [];
         // Loop through photos to send all object data
@@ -145,7 +159,8 @@ const getPhotoSocial = (request, response) => {
             title: items[i].title,
             desc: items[i].desc,
             likes: items[i].likes,
-            uploadDate: items[i].uploadDate
+            uploadDate: items[i].uploadDate,
+            sharedBy: items[i].sharedBy || null
           };
           arrayFileName.push(items[i].file);
           responseData.push(responseObject);
@@ -506,6 +521,69 @@ const deletePhotoById = (request, response) => {
   });
 };
 
+const sharePhotos = (request, response) => {
+  (async () => {
+    var statusCode = 400;
+    var message = "delete photo error from begin";
+    const {file, userid, sharedByEmail,sharedEmail} = request.body;
+    if (userid){
+      // Parameters to delete object from s3 bucket
+      try {
+        var queryParams = {
+          TableName: "Photos",
+          KeyConditionExpression: "#file = :file",
+          ExpressionAttributeNames: {
+            "#file": "file"
+          },
+          ExpressionAttributeValues: {
+            ":file": file
+          }
+        };
+        const deleteQueryData = await dynamodb.query(queryParams).promise();
+        const items = deleteQueryData.Items;
+        var queryUsers = {
+          TableName: "Users",
+          IndexName: "email-index",
+          KeyConditionExpression: "#email = :email",
+          ExpressionAttributeNames: {
+            "#email": "email"
+          },
+          ExpressionAttributeValues: {
+            ":email": sharedEmail
+          }
+        };
+        var usersQueryData = await dynamodb.query(queryUsers).promise();
+        items.forEach(item =>  item.userid = usersQueryData.Items[0].userid );
+        items.forEach(async (item) => {
+          var fileParams = {
+            TableName: "SharedPhotos",
+            Item: {
+              "file": item.file,
+              "userid": item.userid,
+              "title": item.title,
+              "desc": item.desc,
+              "uploadDate": item.uploadDate,
+              "sharedBy": sharedByEmail
+            }
+          };
+          const fileData = await dynamodb.put(fileParams).promise();
+        });
+        message = "Photos shared";
+        response.status(200).send(message);
+      }
+      catch (e){
+        console.error("Photo sharing error in DynamoDB");
+        response.status(statusCode).send(e);
+      };
+    }
+    else {
+      response.status(statusCode).send("can't find user id");
+    };
+  })().catch(e=>{
+    console.error("something went wrong,check server and try again", e);
+    response.status(statusCode).send(message);
+  });
+};
 module.exports = {
   uploadFile,
   updateProfile,
@@ -514,5 +592,6 @@ module.exports = {
   getPhotoByTag,
   getTags,
   deletePhotoById,
-  signup
+  signup,
+  sharePhotos
 };

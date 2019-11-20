@@ -17,4 +17,5 @@ router.get("/getPhotoSocial", api.getPhotoSocial);
 router.get("/getPhotoByTag", api.getPhotoByTag);
 router.get("/getTags", api.getTags);
 router.delete("/deleteById", api.deletePhotoById);
+router.post("/sharePhotos", api.sharePhotos);
 module.exports = router;
