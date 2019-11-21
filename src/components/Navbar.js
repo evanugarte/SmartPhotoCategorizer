@@ -15,6 +15,8 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import {Auth} from "aws-amplify";
+import {signUpAction} from "../actions/signUpAction";
 
 function Navigation(props) {
   const [isOpen, toggleOpen] = useState(false);
@@ -25,6 +27,14 @@ function Navigation(props) {
     { name: "Profile", link: "/ProfileView" }
   ];
   
+  function signup() {
+    Auth.currentAuthenticatedUser().then(user =>{
+      //console.log(user);
+      props.signUpAction({
+        email: user.signInUserSession.idToken.payload.email, 
+        userid: user.username});
+    });
+  }
 
   function getDropDown() {
     if (props.authed) {
@@ -39,10 +49,13 @@ function Navigation(props) {
           </DropdownToggle>
           <DropdownMenu dark="true">
             <DropdownItem>
-              <NavLink
-                onClick={() => props.handleLogout()}
-                href="/login">
-                Log out
+              <NavLink onClick={()=>Auth.signOut({})} href="/Login" >
+                Sign Out
+              </NavLink>
+              <NavLink onClick={()=>Auth.currentAuthenticatedUser().then(user =>
+                alert("You are signed in as "+
+                user.signInUserSession.idToken.payload.email ))}>
+                Current User
               </NavLink>
             </DropdownItem>
           </DropdownMenu>
@@ -67,6 +80,7 @@ function Navigation(props) {
           </Nav>
 
           <Nav className="ml-auto" nav="true">
+            {signup()}
             {getDropDown()}
           </Nav>
         </Collapse>
@@ -80,4 +94,6 @@ const mapStateToProps = state => ({
   user: state.user
 });
 
-export default connect(mapStateToProps)(Navigation);
+export default connect(mapStateToProps,
+  {signUpAction}
+)(Navigation);

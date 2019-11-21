@@ -4,21 +4,22 @@ import { BrowserRouter, withRouter } from "react-router-dom";
 import Routing from "./Routing";
 import Navbar from "./components/Navbar";
 import Amplify, { Auth } from "aws-amplify";
-import config from "./config/config";
+import config from "./aws-exports";
 import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 import store from "./store";
 
-Amplify.configure({
-  Auth: {
-    mandatorySignIn: true,
-    region: config.cognito.REGION,
-    userPoolId: config.cognito.USER_POOL_ID,
-    identityPoolId: config.cognito.IDENTITY_POOL_ID,
-    userPoolWebClientId: config.cognito.APP_CLIENT_ID
-  }
-});
+Amplify.configure(config);
+// Amplify.configure({
+//   Auth: {
+//     mandatorySignIn: true,
+//     region: config.cognito.REGION,
+//     userPoolId: config.cognito.USER_POOL_ID,
+//     identityPoolId: config.cognito.IDENTITY_POOL_ID,
+//     userPoolWebClientId: config.cognito.APP_CLIENT_ID
+//   }
+// });
 
 function App(props) {
   const [authenticated, setAuthenticated] = useState(false);
