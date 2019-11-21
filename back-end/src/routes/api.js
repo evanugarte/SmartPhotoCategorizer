@@ -107,6 +107,7 @@ const getPhotoSocial = (request, response) => {
     var statusCode = 400;
     var message = "User does not exist";
     const userid = request.query.userid;
+
     
     // For now this will be in the headers. Modify later maybe.
     if (userid) {
