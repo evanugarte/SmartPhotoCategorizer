@@ -10,7 +10,7 @@ export const getPicsSocialAction = (query, history) => dispatch => {
       userData = {
         userid: userData.idToken.payload["cognito:username"],
         email: userData.idToken.payload.email
-      }
+      };
     }
     await axios
       .get("http://localhost:4000/users/getPhotoSocial", {params: 
