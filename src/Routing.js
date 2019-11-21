@@ -4,7 +4,7 @@ import { PrivateRoute } from "./PrivateRoute";
 import LoginPage from "./components/Login";
 import SignUpPage from "./components/SignUp";
 import CategoriesPage from "./components/CategoriesPage";
-import PhotoList from "./components/PhotoList";
+import PhotoList from "./components/SearchResultPage";
 import SocialPage from "./components/SocialPage";
 import UploadPage from "./components/UploadPage";
 import ProfilePage from "./components/ProfilePage";

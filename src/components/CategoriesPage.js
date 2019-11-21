@@ -1,5 +1,5 @@
 import React from "react";
-import { Container } from "reactstrap";
+import { Container, Spinner } from "reactstrap";
 import SearchBar from "./SearchBar";
 import CategoryCard from "./CategoryCard";
 import img from "./black.png";
@@ -41,15 +41,14 @@ class CategoriesPage extends React.Component {
 
   render() {
     const { tags } = this.props.tags;
-    console.log(tags);
     return (
       <Container style={{ textAlign: "left" }} className="Employees">
         <SearchBar {...this.props} />
-        {this.renderPersonEntries()}
+        {!tags ? <Spinner animation="border" /> : <React.Fragment />}
         {tags && tags.map((tag, index) => {
           return (
             <CategoryCard key={index} name={tag.tag}
-              photoData={tag.photo.data} {...this.props} />
+              {...this.props} />
           );
         })}
       </Container>

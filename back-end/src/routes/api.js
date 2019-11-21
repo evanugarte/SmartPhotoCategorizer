@@ -392,7 +392,7 @@ const getPhotoByTag = (request, response) => {
           };
           var photoData = await s3.getObject(getParams).promise();
           responseObject = {
-            photo: photoData.Body.buffer,
+            photo: photoData.Body,
             title: items[i].title,
             uploadDate: items[i].uploadDate
           };
