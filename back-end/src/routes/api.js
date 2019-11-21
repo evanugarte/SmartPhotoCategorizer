@@ -413,7 +413,7 @@ const getPhotoByTag = (request, response) => {
 /**
  * Retrieve all tags and one of their associated photos. 
  * @param {userID: Integer} request 
- * @param {[{tag: String, photo: Object}]} response 
+ * @param {[{tag: String}]} response 
  */
 const getTags = (request, response) => {
   (async () => {
@@ -442,14 +442,8 @@ const getTags = (request, response) => {
           if (items[i].tag === prevTag) {
             continue;
           }
-          var getParams = {
-            Bucket: BUCKET_NAME,
-            Key: items[i].file
-          };
-          var photoData = await s3.getObject(getParams).promise();
           var responseObject = {
             tag: items[i].tag,
-            photo: photoData.Body.buffer
           };
           responseData.push(responseObject);
         }
@@ -526,7 +520,7 @@ const sharePhotos = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "delete photo error from begin";
-    const {file, userid, sharedByEmail,sharedEmail} = request.body;
+    const {file, userid, sharedByEmail, sharedEmail} = request.body;
     if (userid){
       // Parameters to delete object from s3 bucket
       try {
