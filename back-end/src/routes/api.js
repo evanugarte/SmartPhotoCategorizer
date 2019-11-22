@@ -326,13 +326,13 @@ const getprofile = (request, response) => {
   });
 };
 
-const signup =  (request, response) => {
+const signup = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "sever error";
     const userid = request.body.userid;
     const email = request.body.email;
-    if (userid && email){
+    if (userid && email) {
       var usersParams = {
         TableName: "Users",
         Item: {
@@ -390,9 +390,13 @@ const getPhotoByTag = (request, response) => {
             Key: items[i].file
           };
           var photoData = await s3.getObject(getParams).promise();
+          var signedUrl = await s3.getSignedUrl("getObject", getParams);
+          
           responseObject = {
-            photo: photoData.Body.buffer,
+            id: getParams.Key,
+            photo: photoData.Body,
             title: items[i].title,
+            fileURL: signedUrl,
             uploadDate: items[i].uploadDate
           };
           responseData.push(responseObject);
@@ -418,13 +422,14 @@ const getPhotoByTag = (request, response) => {
  */
 const getTags = (request, response) => {
   (async () => {
-    var statusCode = 400;
+    var statusCode = 404;
     var message = "Nothing to see here folks";
     // I assume this line is supposed to check if the user is authenticated.
     // Replace once authentication is done.
     const userid = request.query.userid;
     if (userid) {
       try {
+        statusCode = 200;
         var scanParams = {
           TableName: "Photos",
           ProjectionExpression: "#tag, #file",
@@ -436,7 +441,6 @@ const getTags = (request, response) => {
 
         const scanData = await dynamodb.scan(scanParams).promise();
         const items = scanData.Items;
-
         prevTag = "";
         var responseData = [];
         for (let i = 0; i < items.length; i++) {
@@ -454,9 +458,12 @@ const getTags = (request, response) => {
       catch (e) {
         response.status(statusCode).send(message);
       }
+    } else {
+      response.status(statusCode).send(message);
     }
   })().catch(e => {
     console.error("User is not authenticated", e);
+    response.status(403).send("User is not authenticated");
   });
 };
 
@@ -465,10 +472,10 @@ const deletePhotoById = (request, response) => {
   (async () => {
     var statusCode = 400;
     var message = "delete photo error from begin";
-    const {file, userid} = request.body;
-    if (userid){
+    const { file, userid } = request.body;
+    if (userid) {
       // Parameters to delete object from s3 bucket
-      var deleteParams={
+      var deleteParams = {
         Bucket: BUCKET_NAME,
         Key: file
       };
@@ -498,12 +505,12 @@ const deletePhotoById = (request, response) => {
           };
           const deleteEnt = await dynamodb.delete(deleteEntryParams).promise();
         }
-        
+
         // delete object from s3
         const deleteObject = await s3.deleteObject(deleteParams).promise();
         response.status(200).send("Deleted");
       }
-      catch (e){
+      catch (e) {
         console.error("can't delete photo in dynamodb");
         response.status(statusCode).send(e);
       };
@@ -511,7 +518,7 @@ const deletePhotoById = (request, response) => {
     else {
       response.status(statusCode).send("can't find user id");
     };
-  })().catch(e=>{
+  })().catch(e => {
     console.error("something went wrong,check server and try again", e);
     response.status(statusCode).send(message);
   });
@@ -549,7 +556,7 @@ const sharePhotos = (request, response) => {
           }
         };
         var usersQueryData = await dynamodb.query(queryUsers).promise();
-        items.forEach(item =>  item.userid = usersQueryData.Items[0].userid );
+        items.forEach(item => item.userid = usersQueryData.Items[0].userid);
         items.forEach(async (item) => {
           var fileParams = {
             TableName: "SharedPhotos",
@@ -567,7 +574,7 @@ const sharePhotos = (request, response) => {
         message = "Photos shared";
         response.status(200).send(message);
       }
-      catch (e){
+      catch (e) {
         console.error("Photo sharing error in DynamoDB");
         response.status(statusCode).send(e);
       };
@@ -575,7 +582,7 @@ const sharePhotos = (request, response) => {
     else {
       response.status(statusCode).send("can't find user id");
     };
-  })().catch(e=>{
+  })().catch(e => {
     console.error("something went wrong,check server and try again", e);
     response.status(statusCode).send(message);
   });

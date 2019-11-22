@@ -20,10 +20,8 @@
         "react"
     ],
     "rules": {
-        "indent": [
-            "error",
-            2
-        ],
+        "indent": "off",
+        "template-curly-spacing":"off",
         "quotes": [
             "error",
             "double"
