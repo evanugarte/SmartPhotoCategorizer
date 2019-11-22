@@ -1,6 +1,8 @@
 [![CircleCI](https://circleci.com/gh/evanugarte/SmartPhotoCategorizer.svg?style=svg)](https://circleci.com/gh/evanugarte/SmartPhotoCategorizer)
 # SmartPhotoCategorizer
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+University Name: http://www.sjsu.edu
+Course: [Enterprise Software](http://info.sjsu.edu/web-dbgen/catalog/courses/CMPE172.html)
+Professor: [Sanjay Garje](https://www.linkedin.com/in/sanjaygarje/)
 
 ## Available Scripts
 
