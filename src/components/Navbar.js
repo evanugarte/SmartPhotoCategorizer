@@ -15,6 +15,7 @@ import {
 } from "reactstrap";
 import { Link } from "react-router-dom";
 import { connect } from "react-redux";
+import {Auth} from "aws-amplify";
 
 function Navigation(props) {
   const [isOpen, toggleOpen] = useState(false);
@@ -40,7 +41,8 @@ function Navigation(props) {
           <DropdownMenu dark="true">
             <DropdownItem>
               <NavLink
-                onClick={() => props.handleLogout()}
+                // onClick={() => props.handleLogout()}
+                onClick={()=>Auth.signOut({})} 
                 href="/login">
                 Log out
               </NavLink>
