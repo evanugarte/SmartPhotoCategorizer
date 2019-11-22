@@ -11,7 +11,7 @@ export const updateProfileFileAction = (file, history) => dispatch => {
 
 
   axios
-    .post("http://localhost:4000/users/updateprofile", formData)
+    .post("http://backend172.ngrok.io/users/updateprofile", formData)
     .then(res => {
       history.push("/");
     })
@@ -33,7 +33,7 @@ export const getProfileFileAction = (query = {}, history) => dispatch => {
       userData = query;
     }
     await axios
-      .get("http://localhost:4000/users/getprofile", {params:
+      .get("http://backend172.ngrok.io/users/getprofile", {params:
     {userid: userData.userid}})
       .then(res => {
         dispatch({

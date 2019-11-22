@@ -17,7 +17,7 @@ export const getPicsSocialAction = (query = {}, history) => dispatch => {
       userData = query;
     }
     await axios
-      .get("http://localhost:4000/users/getPhotoSocial", {params: 
+      .get("http://backend172.ngrok.io/users/getPhotoSocial", {params: 
     {userid: userData.userid}})
       .then(res => {
         dispatch({

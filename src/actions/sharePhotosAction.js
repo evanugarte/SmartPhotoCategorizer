@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const sharePhotosAction = (sharePhoto) => dispatch => {
   axios
-    .post("http://localhost:4000/users/sharePhotos", sharePhoto)
+    .post("http://backend172.ngrok.io/users/sharePhotos", sharePhoto)
     .catch(err =>
       console.error(err));
 };

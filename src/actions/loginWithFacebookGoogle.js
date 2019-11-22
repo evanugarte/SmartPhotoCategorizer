@@ -3,7 +3,7 @@ import { SOCIAL_LOG_IN } from "./types";
 export const loginWithFacebookGoogle = (signInInfo, history, 
   setAuthenticated) => dispatch => {
   axios
-    .post("http://localhost:4000/users/signup", signInInfo)
+    .post("http://backend172.ngrok.io/users/signup", signInInfo)
     .then(res => {
       dispatch({
         type: SOCIAL_LOG_IN,
