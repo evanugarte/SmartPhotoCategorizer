@@ -1,48 +1,53 @@
 import React from "react";
-import {
-  Card, CardImg, CardBody,
-  CardTitle, CardSubtitle,
-  Container, Button
-} from "reactstrap";
+import { Container, Spinner } from "reactstrap";
 import SearchBar from "./SearchBar";
-import img from "./black.png";
+import CategoryCard from "./CategoryCard";
 import "../App.css";
+import { connect } from "react-redux";
+import { getPhotoTags } from "../actions/tagActions";
 
-function Employees(props) {
 
-  const categories = [
-    { name: "nature", count: 10 },
-    { name: "restaurant", count: 7 },
-    { name: "cars", count: 19 }
-  ];
+class CategoriesPage extends React.Component {
 
-  function renderPersonEntries() {
-    return (
-      categories.map((category, index) => {
-        return (
-          <Card key={index} style={{ width: "70%" }}>
-            <CardImg top style={{ width: "50%" }}
-              src={img} alt="Card image cap" />
-            <CardBody>
-              <CardTitle>{category.name}</CardTitle>
-              <CardSubtitle>{category.count} photos</CardSubtitle>
-              <Button onClick={() =>
-                props.history.push(`/category/${category.name}`)}>
-                Visit</Button>
-            </CardBody>
-          </Card>
-        );
-      })
-    );
-    // }
+  constructor(props) {
+    super(props);
+    this.state = {
+      categories: [
+        { name: "nature", count: 10 },
+        { name: "restaurant", count: 7 },
+        { name: "cars", count: 19 }
+      ]
+    };
   }
 
-  return (
-    <Container style={{ textAlign: "left" }} className="Employees">
-      <SearchBar {...props} />
-      {renderPersonEntries()}
-    </Container>
-  );
+  componentDidMount() {
+    this.props.getPhotoTags();
+  }
+
+  render() {
+    const { tags } = this.props.tags;
+    return (
+      <Container style={{ textAlign: "left" }} className="Employees">
+        <SearchBar {...this.props} />
+        <h2>Please find all Rekognition tags below</h2>
+        {!tags ? <Spinner animation="border" /> : <React.Fragment />}
+        {tags && tags.map((tag, index) => {
+          return (
+            <CategoryCard key={index} name={tag.tag}
+              {...this.props} />
+          );
+        })}
+      </Container>
+    );
+  }
 }
 
-export default Employees;
+const mapStateToProps = (state) => ({
+  tags: state.tags
+  //TODO: need to get this userid from backend first
+});
+
+export default connect(
+  mapStateToProps,
+  { getPhotoTags }
+)(CategoriesPage);
