@@ -21,7 +21,7 @@ export const updateProfileFileAction = (file, history) => dispatch => {
 export const getProfileFileAction = (query = {}, history) => dispatch => {
   (async () => {
     var userData;
-    if (Object.entries(query).length === 0 && query.constructor === Object) {
+    if (query.email === null) {
       userData = await Auth.currentSession();
       if (userData != null){
         userData = {

@@ -52,7 +52,7 @@ class FacebookGoogleLogin extends Component {
         >
           <FacebookLogin
             style={{ borderRadius: 2 }}
-            appId="3146580042050394"
+            appId="1330563343769066"
             autoLoad={false}
             fields="name,email,picture"
             onClick={this.componentClicked}
