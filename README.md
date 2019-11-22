@@ -6,6 +6,11 @@ Course: [Enterprise Software](http://info.sjsu.edu/web-dbgen/catalog/courses/CMP
 
 Professor: [Sanjay Garje](https://www.linkedin.com/in/sanjaygarje/)
 
+Student:[Minh Phan](https://www.linkedin.com/in/minhphan156/) 
+        [Evan Ugarte](https://www.linkedin.com/in/evan-ugarte/)
+        Roy Zhang
+        [Yanyan Yang](https://www.linkedin.com/in/yanyan-yang-20b614148/)
+
 ## Available Scripts
 
 In the project directory, you can run:
