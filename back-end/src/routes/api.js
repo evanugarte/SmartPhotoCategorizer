@@ -332,7 +332,7 @@ const signup =  (request, response) => {
     var message = "sever error";
     const userid = request.body.userid;
     const email = request.body.email;
-    if (userid && email){
+    if (email){
       var usersParams = {
         TableName: "Users",
         Item: {
@@ -341,9 +341,34 @@ const signup =  (request, response) => {
         }
       };
       try {
-        const fileData = await dynamodb.put(usersParams).promise();
-        statusCode = 200;
-        response.status(statusCode).send("signup successfully");
+        var queryUsers = {
+          TableName: "Users",
+          IndexName: "email-index",
+          KeyConditionExpression: "#email = :email",
+          ExpressionAttributeNames: {
+            "#email": "email"
+          },
+          ExpressionAttributeValues: {
+            ":email": email
+          }
+        };
+        var usersQueryData = await dynamodb.query(queryUsers).promise();       
+        if (usersQueryData.Items.length > 0){
+          const userInfo = {
+            userid: usersQueryData.Items[0].userid,
+            email: email
+          };
+          statusCode = 200;
+          response.status(statusCode).send(userInfo);
+        } else {
+          const fileData = await dynamodb.put(usersParams).promise();
+          const userInfo = {
+            userid: usersQueryData.Items[0].userid,
+            email: email
+          };
+          statusCode = 200;
+          response.status(statusCode).send(userInfo);
+        }
       } catch (e) {
         console.error(e);
         response.status(statusCode).send(message);

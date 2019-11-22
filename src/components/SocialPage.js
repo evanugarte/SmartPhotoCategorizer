@@ -78,8 +78,9 @@ class SocialPage extends Component {
   }
 
   componentWillMount() {
-    this.props.getPicsSocialAction();
-    this.props.getProfileFileAction();
+    const { userInfo } = this.props.user;
+    this.props.getPicsSocialAction(userInfo);
+    this.props.getProfileFileAction(userInfo);
   }
   handleShare = (photo) => {
     const { userInfo } = this.props.user;

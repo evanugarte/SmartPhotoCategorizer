@@ -1,5 +1,4 @@
-import { UPDATE_PROFILE, GET_PROFILE } from "../actions/types";
-//TODO: remove dummy email below
+import { UPDATE_PROFILE, GET_PROFILE, SOCIAL_LOG_IN } from "../actions/types";
 const initialState = {
   userInfo: {avatar: null, email: null, 
     password: null, userid: null}
@@ -25,6 +24,11 @@ export default function(state = initialState, action) {
       userInfo: action.payload
     };
   case UPDATE_PROFILE:
+    return {
+      ...state,
+      userInfo: action.payload
+    };
+  case SOCIAL_LOG_IN:
     return {
       ...state,
       userInfo: action.payload
