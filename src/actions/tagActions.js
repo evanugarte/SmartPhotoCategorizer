@@ -33,15 +33,7 @@ export const getPhotoTags = (query = {}) => dispatch => {
 };
 
 export const getPhotoByTag = (photoTag) => dispatch => {
-  var userData;
   (async () => {
-    // userData = await Auth.currentSession();
-    // if (userData != null) {
-    //   userData = {
-    //     userid: userData.idToken.payload["cognito:username"],
-    //     email: userData.idToken.payload.email
-    //   };
-    // }
     await axios
       .get("http://localhost:4000/users/getPhotoByTag", {
         params:
