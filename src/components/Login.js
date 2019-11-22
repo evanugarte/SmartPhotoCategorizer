@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import FacebookGoogleLogin from "./FacebookGoogleLogin";
-
 import {
   Container,
   Button,
@@ -13,7 +12,6 @@ import { Auth } from "aws-amplify";
 
 function LoginView(props) {
   const [email, setEmail] = useState("");
-
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 

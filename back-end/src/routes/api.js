@@ -354,20 +354,20 @@ const signup =  (request, response) => {
         };
         var usersQueryData = await dynamodb.query(queryUsers).promise();       
         if (usersQueryData.Items.length > 0){
-          const userInfo = {
+          const currentUserInfo = {
             userid: usersQueryData.Items[0].userid,
             email: email
           };
           statusCode = 200;
-          response.status(statusCode).send(userInfo);
+          response.status(statusCode).send(currentUserInfo);
         } else {
           const fileData = await dynamodb.put(usersParams).promise();
-          const userInfo = {
-            userid: usersQueryData.Items[0].userid,
+          const newUserInfo = {
+            userid: userid,
             email: email
           };
           statusCode = 200;
-          response.status(statusCode).send(userInfo);
+          response.status(statusCode).send(newUserInfo);
         }
       } catch (e) {
         console.error(e);

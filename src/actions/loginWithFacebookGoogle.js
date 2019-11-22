@@ -11,7 +11,6 @@ export const loginWithFacebookGoogle = (signInInfo, history,
       });
       setAuthenticated(true);
       history.push("/");
-      alert("Successfully login facebook account client.");
     })
     .catch(error => {
       alert("There was an error login facebook account client.");

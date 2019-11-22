@@ -15,7 +15,7 @@ class FacebookGoogleLogin extends Component {
 
   componentClicked = () => {};
 
-  responseFacebook = response => {
+  responseFacebook = (response) => {
     const loginData = {
       userid: response.userID,
       email: response.email
@@ -24,7 +24,7 @@ class FacebookGoogleLogin extends Component {
       this.props.history, this.props.setAuthenticated);
   };
 
-  responseGoogle = response => {
+  responseGoogle = (response) => {
     const loginData = {
       email: response.w3.U3,
       userid: response.w3.Eea
@@ -33,7 +33,7 @@ class FacebookGoogleLogin extends Component {
       loginData, this.props.history, this.props.setAuthenticated);
   };
 
-  onFailure = error => {
+  onFailure = (error) => {
     console.error("google login error ", error);
   };
 
