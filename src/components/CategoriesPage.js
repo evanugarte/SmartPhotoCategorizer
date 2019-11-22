@@ -2,7 +2,6 @@ import React from "react";
 import { Container, Spinner } from "reactstrap";
 import SearchBar from "./SearchBar";
 import CategoryCard from "./CategoryCard";
-import img from "./black.png";
 import "../App.css";
 import { connect } from "react-redux";
 import { getPhotoTags } from "../actions/tagActions";
@@ -22,21 +21,7 @@ class CategoriesPage extends React.Component {
   }
 
   componentDidMount() {
-    this.getIt();
-  }
-
-  getIt = () => {
     this.props.getPhotoTags();
-  }
-
-  renderPersonEntries = () => {
-    return (
-      this.state.categories.map((category, index) => {
-        return (
-          <CategoryCard key={index} count={category.count}
-            img={img} name={category.name} {...this.props} />
-        );
-      }));
   }
 
   render() {
@@ -44,6 +29,7 @@ class CategoriesPage extends React.Component {
     return (
       <Container style={{ textAlign: "left" }} className="Employees">
         <SearchBar {...this.props} />
+        <h2>Please find all Rekognition tags below</h2>
         {!tags ? <Spinner animation="border" /> : <React.Fragment />}
         {tags && tags.map((tag, index) => {
           return (

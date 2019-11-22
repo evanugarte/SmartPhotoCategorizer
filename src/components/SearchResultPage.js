@@ -2,7 +2,9 @@ import React from "react";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
-import { Container } from "reactstrap";
+import IconButton from "@material-ui/core/IconButton";
+import CloudDownload from "@material-ui/icons/CloudDownload";
+import { Container, Spinner } from "reactstrap";
 import "../App.css";
 import { connect } from "react-redux";
 import { getPhotoByTag } from "../actions/tagActions";
@@ -52,20 +54,33 @@ class SearchResultPage extends React.Component {
         <Container style={{
           display: "flex",
           alignContent: "center",
+          justifyContent: "center",
           marginTop: "50px",
           marginBottom: "10px"
         }}>
-          <GridList cellHeight={180} className={classes.gridList}>
-            {photosByTag && photosByTag.map((tile, index) => (
-              <GridListTile key={index}>
-                <img src={tile.photo.data} alt={tile.title} />
-                <GridListTileBar
-                  title={tile.title}
-                  subtitle={<span>Uploaded on: {tile.uploadDate}</span>}
-                />
-              </GridListTile>
-            ))}
-          </GridList>
+          {photosByTag ?
+            <GridList cellHeight={180} className={classes.gridList}
+              style={{ width: "90%" }}>
+              {photosByTag.map((tile, index) => {
+                return (
+                  <GridListTile key={index}>
+                    <img src={tile.photo.data} alt={tile.title} />
+                    <GridListTileBar
+                      title={tile.title}
+                      subtitle={<span>Uploaded on: {tile.uploadDate}</span>}
+                      actionIcon={
+                        <IconButton
+                          aria-label={`info about ${tile.title}`}
+                          className={classes.icon}
+                          onClick={() => window.open(tile.fileURL)}>
+                          <CloudDownload />
+                        </IconButton>
+                      }
+                    />
+                  </GridListTile>
+                );
+              })}
+            </GridList> : <Spinner animation="border" />}
         </Container>
       </React.Fragment>
     );

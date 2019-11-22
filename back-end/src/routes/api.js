@@ -271,7 +271,6 @@ const updateProfile = (request, response) => {
 
 const getprofile = (request, response) => {
   (async () => {
-
     var statusCode = 400;
     var message = "sever error";
     const userid = request.query.userid;
@@ -391,9 +390,13 @@ const getPhotoByTag = (request, response) => {
             Key: items[i].file
           };
           var photoData = await s3.getObject(getParams).promise();
+          var signedUrl = await s3.getSignedUrl("getObject", getParams);
+          
           responseObject = {
+            id: getParams.Key,
             photo: photoData.Body,
             title: items[i].title,
+            fileURL: signedUrl,
             uploadDate: items[i].uploadDate
           };
           responseData.push(responseObject);

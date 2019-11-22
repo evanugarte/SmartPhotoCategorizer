@@ -77,7 +77,7 @@ class SocialPage extends Component {
     this.setState({open: false});
   }
 
-  componentWillMount() {
+  componentDidMount() {
     this.props.getPicsSocialAction();
     this.props.getProfileFileAction();
   }
