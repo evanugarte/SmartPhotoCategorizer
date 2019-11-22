@@ -12,6 +12,11 @@ import { Auth } from "aws-amplify";
 // import { getAuthInfo } from "../backend/AuthFunctions";
 // import md5 from "md5";
 // import config from "../backend/config";
+import Buttons from "./Buttons";
+import Amplify from "aws-amplify";
+import config from "../aws-exports";
+Amplify.configure(config);
+
 
 function LoginView(props) {
   const [email, setEmail] = useState("");
@@ -69,6 +74,7 @@ function LoginView(props) {
       </form>
       <br />
       <a href="signup">New user? Sign up here!</a>
+      <Buttons />
     </Container>
   );
 }

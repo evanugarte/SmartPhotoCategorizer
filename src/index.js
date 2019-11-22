@@ -9,16 +9,19 @@ import "./App.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import { Provider } from "react-redux";
 import store from "./store";
+import configAuth from "./aws-exports";
 
-Amplify.configure({
-  Auth: {
-    mandatorySignIn: true,
-    region: config.cognito.REGION,
-    userPoolId: config.cognito.USER_POOL_ID,
-    identityPoolId: config.cognito.IDENTITY_POOL_ID,
-    userPoolWebClientId: config.cognito.APP_CLIENT_ID
-  }
-});
+// Amplify.configure({
+//   Auth: {
+//     mandatorySignIn: true,
+//     region: config.cognito.REGION,
+//     userPoolId: config.cognito.USER_POOL_ID,
+//     identityPoolId: config.cognito.IDENTITY_POOL_ID,
+//     userPoolWebClientId: config.cognito.APP_CLIENT_ID
+//   }
+// });
+
+Amplify.configure(configAuth);
 
 function App(props) {
   const [authenticated, setAuthenticated] = useState(false);
