@@ -20,8 +20,8 @@ function Navigation(props) {
   const [isOpen, toggleOpen] = useState(false);
   const [dropdownOpen, toggleDropdownOpen] = useState(false);
   const navLinks = [
-    { name: "Upload File", link: "/UploadView" },
-    { name: "View Files", link: "/Categories" },
+    { name: "Upload Photos", link: "/UploadView" },
+    { name: "View Photos", link: "/Categories" },
     { name: "Profile", link: "/ProfileView" }
   ];
   
@@ -54,7 +54,7 @@ function Navigation(props) {
   return (
     <Navbar color="dark" dark={true} expand="sm">
       <Container>
-        <NavbarBrand href="/">172 Project 2</NavbarBrand>
+        <NavbarBrand href="/">Photo Share</NavbarBrand>
         <Collapse isOpen={isOpen} navbar={true}>
           <Nav className="mr-auto" navbar>
             {props.authed && navLinks.map((option, index) => {

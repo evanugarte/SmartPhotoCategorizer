@@ -81,7 +81,7 @@ class UploadPage extends Component {
               "linear-gradient(to right, #0c4b78, #3d4e96, #2c76a9)"
           }}
         >
-          <h2>Upload Files</h2>
+          <h2>Upload Photos</h2>
         </div>
 
         <form
