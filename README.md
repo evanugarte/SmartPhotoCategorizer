@@ -6,13 +6,53 @@ Course: [Enterprise Software](http://info.sjsu.edu/web-dbgen/catalog/courses/CMP
 
 Professor: [Sanjay Garje](https://www.linkedin.com/in/sanjaygarje/)
 
-Student:[Minh Phan](https://www.linkedin.com/in/minhphan156/) 
-
-        [Evan Ugarte](https://www.linkedin.com/in/evan-ugarte/)
-        
-        Roy Zhang
-        
+Student: [Minh Phan](https://www.linkedin.com/in/minhphan156/);
+        [Evan Ugarte](https://www.linkedin.com/in/evan-ugarte/);
+        Roy Zhang;
         [Yanyan Yang](https://www.linkedin.com/in/yanyan-yang-20b614148/)
+        
+
+## Project Introduction
+Our application is called Photo Share. It is a web application that allows registered users to upload, delete, search and share their photos with family and friends. The app will auto categorized uploaded photos by its objects as well as detect any inappropriate content. The app can be tested with test account credentials [user id: tester, password: Cmpe172!]
+It uses a 3-Tier Application Architecture: 
+- The presentation tier is built with React and hosted in an S3 bucket
+- The business logic tier is built with Express and Node.js
+- The database tier is built with AWS DynamoDB
+
+### Feature List
+- Social login with Google or Facebook account
+- User account register with user name and password combination
+- Upload, delete, modify,  search photos
+- User profile page
+- Auto categorized photo by its object
+- Social View page 
+- Reliable, autoscaling, content distribution  powered by AWS Services 
+
+
+## Sample Demo Screenshots
+
+## Pre-requisites Set Up
+### Cloud Services
+- S3 buckets to hold images and stage website
+- DynamoDB tables to store user information and references to photo objects
+- Route53 for domain name and routing
+- ELB, ASG, and EC2 to host our server and direct traffic
+- CloudFront for content delivery
+- SNS and CloudWatch for notifications about our system
+- Rekognition for label detection on images
+- Cognito user pool for user authentication
+### Local Software
+- Visual Studio Code. 
+- ESlint plugin.
+- NodeJS. Modules with npm.
+- Git
+### Local Configurations
+- Install Node.js, Visual Studio Code, ESlint plugin, and Redux DevTools plugin for web browser.
+- Clone github repository.
+- npm install all required modules.
+- Get AWS access and secret keys from administrator. Set up configuration file with these keys.
+- Run npm start in '/back-end' to start server.
+- Run npm start in '/' to start react scripts.
 
 ## Available Scripts
 
