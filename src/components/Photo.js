@@ -1,28 +1,21 @@
 import React from "react";
-import { Row, Col } from "reactstrap";
+import { Card, CardImg, CardBody, CardTitle, CardSubtitle } from "reactstrap";
 
 function Photo(props) {
   return (
-    <div>
-      <Row>
-        <Col>
-          <img src={props.image} alt={props.title} />
-        </Col>
-        <Col>
-          <p>
-            {props.title} uploaded: {props.uploadDate}
-          </p>
-        </Col>
-      </Row>
-      <Row>
-        <Col>
-          {/* are we doing downloads? */}
-          {/* <Button>
-                  Download
-                </Button> */}
-        </Col>
-      </Row>
-    </div>
+    <Card>
+      <CardImg top style={{
+        width: "250px",
+        height: "250px",
+        position: "relative"
+      }}
+      src={props.image} alt="Card image cap" />
+      <CardBody>
+        <CardTitle>{props.title}</CardTitle>
+        <CardSubtitle>{props.uploadDate}</CardSubtitle>
+        {/* <Button>Button</Button> */}
+      </CardBody>
+    </Card>
   );
 }
 

@@ -1,20 +1,33 @@
 import React from "react";
-import { getPhotoByTag } from "../actions/tagActions";
-import Photo from "./Photo";
-import image from "./black.png";
+import GridList from "@material-ui/core/GridList";
+import GridListTile from "@material-ui/core/GridListTile";
+import GridListTileBar from "@material-ui/core/GridListTileBar";
+import { Container } from "reactstrap";
+import "../App.css";
 import { connect } from "react-redux";
+import { getPhotoByTag } from "../actions/tagActions";
+import { withStyles } from "@material-ui/core/styles";
+
+const styles = (theme => ({
+  root: {
+    display: "flex",
+    flexWrap: "wrap",
+    justifyContent: "space-around",
+    overflow: "hidden",
+    backgroundColor: theme.palette.background.paper,
+  },
+  gridList: {
+    width: 500,
+    height: 450,
+  },
+  icon: {
+    color: "rgba(255, 255, 255, 0.54)",
+  },
+}));
 
 class SearchResultPage extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      images: [
-        { name: "IMG_2013", uploadDate: "12/20/19", image: image },
-        { name: "IMG_4021", uploadDate: "12/20/19", image: image },
-        { name: "IMG_1227", uploadDate: "12/20/19", image: image }
-      ],
-      pathName: ""
-    };
+  state = {
+    pathName: ""
   }
 
   componentDidMount() {
@@ -31,23 +44,33 @@ class SearchResultPage extends React.Component {
   }
 
   render() {
-    const { tags } = this.props;
+    const { photosByTag } = this.props.tags;
+    const classes = this.props.classes;
     return (
-      <div>
+      <React.Fragment>
         <h1>Photos for {this.state.pathName}</h1>
-        {tags.photosByTag &&
-          tags.photosByTag.map((image, index) => {
-            return (
-              <Photo key={index} title={image.title}
-                uploadDate={image.uploadDate}
-                image={image.photo.data} />
-            );
-          })}
-      </div>
+        <Container style={{
+          display: "flex",
+          alignContent: "center",
+          marginTop: "50px",
+          marginBottom: "10px"
+        }}>
+          <GridList cellHeight={180} className={classes.gridList}>
+            {photosByTag && photosByTag.map((tile, index) => (
+              <GridListTile key={index}>
+                <img src={tile.photo.data} alt={tile.title} />
+                <GridListTileBar
+                  title={tile.title}
+                  subtitle={<span>Uploaded on: {tile.uploadDate}</span>}
+                />
+              </GridListTile>
+            ))}
+          </GridList>
+        </Container>
+      </React.Fragment>
     );
   }
 }
-
 
 const mapStateToProps = (state) => ({
   tags: state.tags
@@ -57,4 +80,9 @@ const mapStateToProps = (state) => ({
 export default connect(
   mapStateToProps,
   { getPhotoByTag }
-)(SearchResultPage);
+)(withStyles(styles)(SearchResultPage));
+
+
+
+
+
