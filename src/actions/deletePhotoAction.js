@@ -1,11 +1,12 @@
 import axios from "axios";
 import { getPicsSocialAction } from "./getPicsSocialAction";
 
-export const deletePhotoAction = (queryDelete, history) => dispatch => {
+export const deletePhotoAction = (queryDelete, userInfo) => dispatch => {
   axios
-    .delete("http://localhost:4000/users/deleteById", { data: queryDelete })
+    .delete("https://backend172.ngrok.io/users/deleteById", 
+    { data: queryDelete })
     .then(res => {
-      dispatch(getPicsSocialAction());
+      dispatch(getPicsSocialAction(userInfo));
     })
     .catch(err =>
       console.error(err));

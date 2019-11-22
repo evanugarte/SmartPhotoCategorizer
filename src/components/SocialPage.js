@@ -180,7 +180,7 @@ class SocialPage extends Component {
                       photo.sharedBy + " shared this to you" :     <IconButton 
                       onClick={() => 
                         this.props.deletePhotoAction({
-                          file: photo.file, userid: userInfo.userid})}
+                          file: photo.file, userid: userInfo.userid}, userInfo)}
                       aria-label="delete">
                       <DeleteIcon/>
                     </IconButton>}

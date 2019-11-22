@@ -2,7 +2,7 @@ import axios from "axios";
 
 export const signup = (query) => {
   axios
-    .post("http://localhost:4000/users/signup", query)
+    .post("https://backend172.ngrok.io/users/signup", query)
     .catch(err =>
       console.error(err));
 };

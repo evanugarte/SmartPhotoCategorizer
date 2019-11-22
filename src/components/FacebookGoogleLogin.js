@@ -61,8 +61,8 @@ class FacebookGoogleLogin extends Component {
           <br />
           <GoogleLogin
             style={{ width: 242 }}
-            clientId={"457180824943-lv16voqfvsiurmjcesmbp6qq" +
-             "9t9iv03o.apps.googleusercontent.com"}
+            clientId={"457180824943-v3usvhsv3jat6r6idj7i"
+            +"mm186d1biu64.apps.googleusercontent.com"}
             buttonText="Login"
             onSuccess={this.responseGoogle}
             onFailure={this.onFailure}

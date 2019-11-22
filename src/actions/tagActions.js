@@ -17,7 +17,7 @@ export const getPhotoTags = (query = {}) => dispatch => {
     userData = query;
   }
     await axios
-      .get("http://localhost:4000/users/getTags", {
+      .get("https://backend172.ngrok.io/users/getTags", {
         params:
           { userid: userData.userid }
       })
@@ -35,7 +35,7 @@ export const getPhotoTags = (query = {}) => dispatch => {
 export const getPhotoByTag = (photoTag) => dispatch => {
   (async () => {
     await axios
-      .get("http://localhost:4000/users/getPhotoByTag", {
+      .get("https://backend172.ngrok.io/users/getPhotoByTag", {
         params:
           { tag: photoTag }
       })

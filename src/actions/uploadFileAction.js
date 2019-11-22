@@ -10,7 +10,7 @@ export const uploadFileAction = (file, history) => dispatch => {
 
 
   axios
-    .post(" http://localhost:4000/users/upload", formData)
+    .post(" https://backend172.ngrok.io/users/upload", formData)
     .then(res => {
       history.push("/");
       dispatch({
