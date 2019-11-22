@@ -2,15 +2,19 @@ import axios from "axios";
 import { GET_PICS_SOCIAL } from "./types";
 import { Auth } from "aws-amplify";
 
-export const getPicsSocialAction = (query, history) => dispatch => {
-  var userData;
+export const getPicsSocialAction = (query = {}, history) => dispatch => {
   (async () => {
-    userData = await Auth.currentSession();
-    if (userData != null){
-      userData = {
-        userid: userData.idToken.payload["cognito:username"],
-        email: userData.idToken.payload.email
-      };
+    var userData;
+    if (query.email === null) {
+      userData = await Auth.currentSession();
+      if (userData != null){
+        userData = {
+          userid: userData.idToken.payload["cognito:username"],
+          email: userData.idToken.payload.email
+        };
+      }
+    } else {
+      userData = query;
     }
     await axios
       .get("http://localhost:4000/users/getPhotoSocial", {params: 

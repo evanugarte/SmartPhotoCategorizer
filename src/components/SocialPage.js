@@ -77,9 +77,10 @@ class SocialPage extends Component {
     this.setState({open: false});
   }
 
-  componentDidMount() {
-    this.props.getPicsSocialAction();
-    this.props.getProfileFileAction();
+  componentWillMount() {
+    const { userInfo } = this.props.user;
+    this.props.getPicsSocialAction(userInfo);
+    this.props.getProfileFileAction(userInfo);
   }
   handleShare = (photo) => {
     const { userInfo } = this.props.user;
@@ -175,15 +176,14 @@ class SocialPage extends Component {
                         </Button>
                       </DialogActions>
                     </Dialog>
-                    <IconButton 
+                    {photo.sharedBy ? 
+                      photo.sharedBy + " shared this to you" :     <IconButton 
                       onClick={() => 
                         this.props.deletePhotoAction({
                           file: photo.file, userid: userInfo.userid})}
                       aria-label="delete">
                       <DeleteIcon/>
-                    </IconButton>
-                    {photo.sharedBy ? 
-                      photo.sharedBy + " shared this to you" : null}
+                    </IconButton>}
                   </CardActions>
                 </Card>
               </Grid>

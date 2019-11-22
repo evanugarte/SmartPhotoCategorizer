@@ -18,15 +18,19 @@ export const updateProfileFileAction = (file, history) => dispatch => {
     .catch(err => console.error(err));
 };
 
-export const getProfileFileAction = (history) => dispatch => {
-  var userData;
+export const getProfileFileAction = (query = {}, history) => dispatch => {
   (async () => {
-    userData = await Auth.currentSession();
-    if (userData != null){
-      userData = {
-        userid: userData.idToken.payload["cognito:username"],
-        email: userData.idToken.payload.email
-      };
+    var userData;
+    if (query.email === null) {
+      userData = await Auth.currentSession();
+      if (userData != null){
+        userData = {
+          userid: userData.idToken.payload["cognito:username"],
+          email: userData.idToken.payload.email
+        };
+      }
+    } else {
+      userData = query;
     }
     await axios
       .get("http://localhost:4000/users/getprofile", {params:

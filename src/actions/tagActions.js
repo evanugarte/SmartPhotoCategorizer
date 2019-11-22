@@ -2,16 +2,20 @@ import axios from "axios";
 import { GET_TAGS, GET_PHOTOS_BY_TAG } from "./types";
 import { Auth } from "aws-amplify";
 
-export const getPhotoTags = () => dispatch => {
-  var userData;
+export const getPhotoTags = (query = {}) => dispatch => {
   (async () => {
-    userData = await Auth.currentSession();
-    if (userData != null) {
-      userData = {
-        userid: userData.idToken.payload["cognito:username"],
-        email: userData.idToken.payload.email
-      };
-    }
+    var userData;
+    if (query.email === null) {
+      userData = await Auth.currentSession();
+      if (userData != null) {
+        userData = {
+          userid: userData.idToken.payload["cognito:username"],
+          email: userData.idToken.payload.email
+        };
+      }
+  } else {
+    userData = query;
+  }
     await axios
       .get("http://localhost:4000/users/getTags", {
         params:
@@ -26,19 +30,10 @@ export const getPhotoTags = () => dispatch => {
       .catch(err =>
         console.error(err));
   })();
-
 };
 
 export const getPhotoByTag = (photoTag) => dispatch => {
-  var userData;
   (async () => {
-    userData = await Auth.currentSession();
-    if (userData != null) {
-      userData = {
-        userid: userData.idToken.payload["cognito:username"],
-        email: userData.idToken.payload.email
-      };
-    }
     await axios
       .get("http://localhost:4000/users/getPhotoByTag", {
         params:

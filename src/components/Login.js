@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import FacebookGoogleLogin from "./FacebookGoogleLogin";
 import {
   Container,
   Button,
@@ -8,16 +9,9 @@ import {
   Spinner
 } from "reactstrap";
 import { Auth } from "aws-amplify";
-// import { checkIfUserExists, addUserToRDS } from "../backend/RDSFunctions";
-// import { getAuthInfo } from "../backend/AuthFunctions";
-// import md5 from "md5";
-// import config from "../backend/config";
 
 function LoginView(props) {
   const [email, setEmail] = useState("");
-  // const [modalShown, setModalShown] = useState(false);
-  // const [firstName, setFirstName] = useState("");
-  // const [lastName, setLastName] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
@@ -68,6 +62,8 @@ function LoginView(props) {
         </Button>
       </form>
       <br />
+      <FacebookGoogleLogin setAuthenticated={props.setAuthenticated} 
+        history={props.history} />
       <a href="signup">New user? Sign up here!</a>
     </Container>
   );

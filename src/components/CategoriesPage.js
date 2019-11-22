@@ -21,7 +21,8 @@ class CategoriesPage extends React.Component {
   }
 
   componentDidMount() {
-    this.props.getPhotoTags();
+    const { userInfo } = this.props.user;
+    this.props.getPhotoTags(userInfo);
   }
 
   render() {
@@ -43,7 +44,8 @@ class CategoriesPage extends React.Component {
 }
 
 const mapStateToProps = (state) => ({
-  tags: state.tags
+  tags: state.tags,
+  user: state.user
   //TODO: need to get this userid from backend first
 });
 
