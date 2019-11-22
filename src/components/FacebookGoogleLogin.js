@@ -16,14 +16,6 @@ class FacebookGoogleLogin extends Component {
   componentClicked = () => {};
 
   responseFacebook = response => {
-    var firstName = response.name
-      .split(" ")
-      .slice(0, -1)
-      .join(" ");
-    var lastName = response.name
-      .split(" ")
-      .slice(-1)
-      .join(" ");
     const loginData = {
       userid: response.userID,
       email: response.email

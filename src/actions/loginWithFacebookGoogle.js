@@ -15,6 +15,6 @@ export const loginWithFacebookGoogle = (signInInfo, history,
     })
     .catch(error => {
       alert("There was an error login facebook account client.");
-      console.log(error);
+      console.error(error);
     });
 };
