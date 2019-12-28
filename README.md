@@ -86,4 +86,3 @@ git clone https://github.com/evanugarte/SmartPhotoCategorizer.git
 - SNS and CloudWatch for notifications about our system
 - Rekognition for label detection on images
 - Cognito user pool for user authentication
-- test edit
